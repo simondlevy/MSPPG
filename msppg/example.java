@@ -27,7 +27,7 @@ public class example implements Raw_IMU_Handler {
 
     public static void main(String [] argv) {
 
-        MSP_Parser parser = new MSP_Parser();
+        Parser parser = new Parser();
 
         byte [] buf = parser.serialize_Raw_IMU((short)59, (short)76, (short)1);
 
