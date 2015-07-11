@@ -18,9 +18,9 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
  '''
 
-from msppg import MSP_Parser
+from msppg import Parser
 
-parser = MSP_Parser()
+parser = Parser()
 
 def dispatcher(pitch, roll, yaw):
 
