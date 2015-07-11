@@ -1,4 +1,4 @@
-#include "dolphinlink.h"
+#include "msppg.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -16,29 +16,29 @@ static byte CRC8(byte * data, int n) {
     return crc;
 }
 
-byte DolphinMessage::start() {
+byte MSP_Message::start() {
 
     this->pos = 0;
     return this->getNext();
 }
 
-bool DolphinMessage::hasNext() {
+bool MSP_Message::hasNext() {
 
     return this->pos <= this->len;
 }
 
 
-byte DolphinMessage::getNext() {
+byte MSP_Message::getNext() {
 
     return this->bytes[this->pos++];
 }
 
-DolphinMessageParser::DolphinMessageParser() {
+MSP_Parser::MSP_Parser() {
 
     this->state = 0;
 }
 
-void DolphinMessageParser::parse(byte b) {
+void MSP_Parser::parse(byte b) {
 
     switch (this->state) {
 
