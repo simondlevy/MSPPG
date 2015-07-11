@@ -1,5 +1,5 @@
 #
-# Example Makefile for DolphinLink Python output
+# Example Makefile for Python output of MSPPG
 #
 # Copyright (C) Simon D. Levy 2015
 #
@@ -15,12 +15,6 @@
 #
 # You should have received a copy of the GNU Lesser General Public License 
 # along with this code.  If not, see <http:#www.gnu.org/licenses/>.
-# You should also have received a copy of the Parrot Parrot AR.Drone 
-# Development License and Parrot AR.Drone copyright notice and disclaimer 
-# and If not, see 
-#   <https:#projects.ardrone.org/attachments/277/ParrotLicense.txt> 
-# and
-#   <https:#projects.ardrone.org/attachments/278/
 
 install:
 	sudo python setup.py install
