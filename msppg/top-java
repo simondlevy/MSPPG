@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.io.ByteArrayOutputStream;
 
-public class MessageParser {
+public class MSP_Parser {
 
     private int state;
     private byte message_direction;
@@ -14,7 +14,7 @@ public class MessageParser {
     private ByteArrayOutputStream message_buffer;
     private byte message_checksum;
 
-    public MessageParser() {
+    public MSP_Parser() {
 
         this.state = 0;
         this.message_buffer = new ByteArrayOutputStream();
