@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Example for testing Python output of DolphinLink compiler
+Example for testing Python output of MSPPG
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -13,26 +13,21 @@ This code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
- You should have received a copy of the GNU Lesser General Public License 
- along with this code.  If not, see <http:#www.gnu.org/licenses/>.
- You should also have received a copy of the Parrot Parrot AR.Drone 
- Development License and Parrot AR.Drone copyright notice and disclaimer 
- and If not, see 
-  <https:#projects.ardrone.org/attachments/277/ParrotLicense.txt> 
-and
-  <https:#projects.ardrone.org/attachments/278/ParrotCopyrightAndDisclaimer.txt>.
-'''
 
-from dolphinlink import MessageParser
+You should have received a copy of the GNU Lesser General Public License 
+along with this code.  If not, see <http:#www.gnu.org/licenses/>.
+ '''
 
-parser = MessageParser()
+from msppg import MSP_Parser
+
+parser = MSP_Parser()
 
 def dispatcher(pitch, roll, yaw):
 
     print(pitch, roll, yaw)
 
-parser.attach_RAW_IMU_Dispatcher(dispatcher)
+parser.attach_Raw_IMU_Dispatcher(dispatcher)
 
-for c in parser.serialize_RAW_IMU(59, 76, 1):
+for c in parser.serialize_Raw_IMU(59, 76, 1):
 
     parser.parse(c)
