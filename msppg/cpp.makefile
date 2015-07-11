@@ -1,5 +1,5 @@
 #
-# Example Makefile for DolphinLink C++ output
+# Example Makefile for MSPPG C++ output
 #
 # Copyright (C) Simon D. Levy 2015
 #
@@ -24,16 +24,16 @@ ALL = example
 all: $(ALL)
 
 install: 
-	cp -r dolphinlink $(INSTALLDIR)
+	cp -r msppg $(INSTALLDIR)
 
 test: example
 	./example
   
-example: example.o dolphinlink.o
-	g++ -o example example.o dolphinlink.o
+example: example.o msppg.o
+	g++ -o example example.o msppg.o
   
-example.o: example.cpp dolphinlink/dolphinlink.h
+example.o: example.cpp msppg/msppg.h
 	g++ -Wall -c example.cpp
   
-dolphinlink.o: dolphinlink/dolphinlink.cpp dolphinlink/dolphinlink.h
-	g++ -std=c++11 -Wall -c dolphinlink/dolphinlink.cpp
+msppg.o: msppg/msppg.cpp msppg/msppg.h
+	g++ -std=c++11 -Wall -c msppg/msppg.cpp
