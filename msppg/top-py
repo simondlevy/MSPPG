@@ -11,7 +11,7 @@ def _CRC8(data):
 
     return crc
 
-class MessageParser(object):
+class MSP_Parser(object):
 
     def __init__(self):
 
