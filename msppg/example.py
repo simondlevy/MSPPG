@@ -26,8 +26,8 @@ def dispatcher(pitch, roll, yaw):
 
     print(pitch, roll, yaw)
 
-parser.attach_Raw_IMU_Dispatcher(dispatcher)
+parser.attach_Attitude_Dispatcher(dispatcher)
 
-for c in parser.serialize_Raw_IMU(59, 76, 1):
+for c in parser.serialize_Attitude(59, 76, 1):
 
     parser.parse(c)
