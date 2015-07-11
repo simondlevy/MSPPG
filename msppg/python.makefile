@@ -1,5 +1,5 @@
 #
-# Example Makefile for Python output of MSPPG
+# Example Makefile for MSPPG Python output
 #
 # Copyright (C) Simon D. Levy 2015
 #
