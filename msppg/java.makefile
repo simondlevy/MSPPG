@@ -1,5 +1,5 @@
 #
-# Example Makefile for DolphinLink Java output
+# Example Makefile for MSPPG Java output
 #
 # Copyright (C) Simon D. Levy 2015
 #
@@ -15,15 +15,9 @@
 #
 #  You should have received a copy of the GNU Lesser General Public License 
 #  along with this code.  If not, see <http:#www.gnu.org/licenses/>.
-#  You should also have received a copy of the Parrot Parrot AR.Drone 
-#  Development License and Parrot AR.Drone copyright notice and disclaimer 
-#  and If not, see 
-#   <https:#projects.ardrone.org/attachments/277/ParrotLicense.txt> 
-# and
-#   <https:#projects.ardrone.org/attachments/278/
 
 # Change this to match your desired install directory
-INSTALLDIR = /home/levys/DolphinQuad/gcs/android/DolphinGCS/app/src/main/java/edu/wlu/dolphingcs/
+INSTALLDIR = /home/levys/DolphinQuad/gcs/android/DolphinGCS/app/src/main/java/edu/wlu/cs/
 
 ALL = example.class
 
