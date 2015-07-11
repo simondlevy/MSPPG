@@ -4,13 +4,13 @@ static const int MAXBUF = 256;
 
 typedef unsigned char byte;
 
-class DolphinMessage {
+class MSP_Message {
 
-    friend class DolphinMessageParser;
+    friend class MSP_Parser;
 
     protected:
 
-        DolphinMessage() { }
+        MSP_Message() { }
         byte bytes[MAXBUF];
         int pos;
         int len;
@@ -23,7 +23,7 @@ class DolphinMessage {
 
 };
 
-class DolphinMessageParser {
+class MSP_Parser {
 
     private:
 
@@ -37,7 +37,7 @@ class DolphinMessageParser {
 
     public:
 
-        DolphinMessageParser();
+        MSP_Parser();
 
         void parse(byte b);
 
