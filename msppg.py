@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 '''
+
+msppg.py Multiwii Serial Protocol Parser Generator
+
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
 This code is free software: you can redistribute it and/or modify
@@ -15,12 +18,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License 
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
-You should also have received a copy of the Parrot Parrot AR.Drone 
-Development License and Parrot AR.Drone copyright notice and disclaimer 
-and If not, see 
-  <https:#projects.ardrone.org/attachments/277/ParrotLicense.txt> 
-and
-  <https:#projects.ardrone.org/attachments/278/ParrotCopyrightAndDisclaimer.txt>.
 '''
 
 from sys import exit, argv, stderr
@@ -87,7 +84,7 @@ class CodeEmitter(object):
 
     def _getsrc(self, filename):
 
-        return resource_string('dolphinlink', filename)
+        return resource_string('msppg', filename)
  
 # Python emitter ============================================================================
 
@@ -96,11 +93,11 @@ class PythonEmitter(CodeEmitter):
     def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'python', 'py')
-        mkdir_if_missing('output/python/dolphinlink')
+        mkdir_if_missing('output/python/msppg')
 
         self._copyfile('setup.py', 'output/python/setup.py')
 
-        self.output = open('./output/python/dolphinlink/__init__.py', 'w')
+        self.output = open('./output/python/msppg/__init__.py', 'w')
 
         self._write(self.warning('#'))
 
@@ -157,12 +154,12 @@ class CPPEmitter(CodeEmitter):
     def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
-        mkdir_if_missing('output/cpp/dolphinlink')
+        mkdir_if_missing('output/cpp/msppg')
 
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
 
-        self.coutput = open('./output/cpp/dolphinlink/dolphinlink.cpp', 'w')
-        self.houtput = open('./output/cpp/dolphinlink/dolphinlink.h', 'w')
+        self.coutput = open('./output/cpp/msppg/msppg.cpp', 'w')
+        self.houtput = open('./output/cpp/msppg/msppg.h', 'w')
 
         self._cwrite(self.warning('//'))
 
@@ -177,7 +174,7 @@ class CPPEmitter(CodeEmitter):
             argnames  = msgstuff[1]
             argtypes = msgstuff[2]
 
-            self._hwrite(self.indent*2 + 'DolphinMessage serialize_%s' % msgtype)
+            self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
             self._hwrite(';\n\n')
 
@@ -229,13 +226,13 @@ class CPPEmitter(CodeEmitter):
             self._hwrite('};\n\n')
 
             # Add parser method for setting handler
-            self._cwrite('void DolphinMessageParser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
+            self._cwrite('void MessageParser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
                     (msgtype, msgtype))
             self._cwrite(self.indent + 'this->handlerFor%s = handler;\n' % msgtype)
             self._cwrite('}\n\n')
 
             # Add parser method for serializing message
-            self._cwrite('DolphinMessage DolphinMessageParser::serialize_%s' % msgtype)
+            self._cwrite('DolphinMessage MessageParser::serialize_%s' % msgtype)
             self._write_params(self.coutput, argtypes, argnames)
             self._cwrite(' {\n\n')
             self._cwrite(self.indent + 'DolphinMessage msg;\n\n')
@@ -277,13 +274,13 @@ class JavaEmitter(CodeEmitter):
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')
-        mkdir_if_missing('output/java/edu/wlu/dolphingcs')
-        mkdir_if_missing('output/java/edu/wlu/dolphingcs/dolphinlink')
+        mkdir_if_missing('output/java/edu/wlu/cs')
+        mkdir_if_missing('output/java/edu/wlu/cs/msppg')
 
         self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
         self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float'}
 
-        self.output = open('./output/java/edu/wlu/dolphingcs/dolphinlink/MessageParser.java', 'w')
+        self.output = open('./output/java/edu/wlu/cs/msppg/MSP_Parser.java', 'w')
 
         self._write(self.warning('//'))
 
@@ -359,9 +356,9 @@ class JavaEmitter(CodeEmitter):
             argnames  = msgstuff[1]
             argtypes = msgstuff[2]
 
-            self.output = open('./output/java/edu/wlu/dolphingcs/dolphinlink/%s_Handler.java' % msgtype, 'w')
+            self.output = open('./output/java/edu/wlu/cs/msppg/%s_Handler.java' % msgtype, 'w')
             self.output.write(self.warning('//'))
-            self.output.write('package edu.wlu.dolphingcs.dolphinlink;\n\n')
+            self.output.write('package edu.wlu.cs.msppg;\n\n')
             self.output.write('public interface %s_Handler {\n\n' % msgtype)
             self.output.write(self.indent + 'public void handle_%s' % msgtype)
             self._write_params(self.output, argtypes, argnames)
