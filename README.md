@@ -17,4 +17,8 @@ which will create output/python, output/java/ and output/cpp. You can cd to any 
 
 % make test
 
-to test the code.
+to test the code.  In output/python you can also run the imutest.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from an AcroNaze flight controller.  In output/java you can do
+
+% make jar
+
+to build the msppg.jar file, which can then be used as a library for Android projects and other Java-based work.
