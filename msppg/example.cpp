@@ -24,11 +24,11 @@ using namespace std;
 
 #include "msppg/msppg.h"
 
-class My_RAW_IMU_Handler : public RAW_IMU_Handler {
+class My_Attitude_Handler : public Attitude_Handler {
 
     public:
 
-        void handle_Raw_IMU(short pitch, short roll, short yaw) {
+        void handle_Attitude(short pitch, short roll, short yaw) {
 
             printf("%+3d %+3d %+3d\n", pitch, roll, yaw);
         }
@@ -39,11 +39,11 @@ int main(int argc, char ** argv) {
 
     MSP_Parser parser;
 
-    MSP_Message message = parser.serialize_Raw_IMU(59, 76, 1);
+    MSP_Message message = parser.serialize_Attitude(59, 76, 1);
 
-    My_Raw_IMU_Handler handler;
+    My_Attitude_Handler handler;
 
-    parser.set_Raw_IMU_Handler(&handler);
+    parser.set_Attitude_Handler(&handler);
 
     for (byte b=message.start(); message.hasNext(); b=message.getNext()) {
 

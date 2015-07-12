@@ -226,16 +226,16 @@ class CPPEmitter(CodeEmitter):
             self._hwrite('};\n\n')
 
             # Add parser method for setting handler
-            self._cwrite('void MessageParser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
+            self._cwrite('void MSP_Parser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
                     (msgtype, msgtype))
             self._cwrite(self.indent + 'this->handlerFor%s = handler;\n' % msgtype)
             self._cwrite('}\n\n')
 
             # Add parser method for serializing message
-            self._cwrite('DolphinMessage MessageParser::serialize_%s' % msgtype)
+            self._cwrite('MSP_Message MSP_Parser::serialize_%s' % msgtype)
             self._write_params(self.coutput, argtypes, argnames)
             self._cwrite(' {\n\n')
-            self._cwrite(self.indent + 'DolphinMessage msg;\n\n')
+            self._cwrite(self.indent + 'MSP_Message msg;\n\n')
             msgsize = self._msgsize(argtypes)
             self._cwrite(self.indent + 'msg.bytes[0] = 36;\n')
             self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
