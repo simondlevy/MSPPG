@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 '''
-Graphical demo of MSPPG Attitude messages.  Requires NumPY.
+Graphical demo of MSPPG Attitude messages
 
-Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
+Copyright (C) Alec Singer and Simon D. Levy 2015
 
 This code is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as 
@@ -22,12 +22,7 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 FMUPORT = 'COM3'
 
 VEHICLE_SCALE = 0.10
-
 UPDATE_MSEC = 10
-
-YAW_ACTIVE = 1
-PITCH_ACTIVE = 2
-ROLL_ACTIVE = 3
 
 from Tkinter import *
 import threading
@@ -37,7 +32,7 @@ import msppg
 from math import sin, cos, radians, degrees
 import numpy as np
 
-class Setup(object):
+class Display(object):
 
     def __init__(self, driver, simulation=False):
 
@@ -236,13 +231,8 @@ class Setup(object):
         self.rollrot[1,0] = +sin(rollAngle)
         self.rollrot[1,1] = +cos(rollAngle)
 
-        # Multiply matrices based on active axis
-        if self.driver.active_axis == YAW_ACTIVE:
-            rot = np.dot(np.dot(self.rollrot, self.pitchrot), self.yawrot)
-        elif self.driver.active_axis == PITCH_ACTIVE:
-            rot = np.dot(np.dot(self.yawrot, self.rollrot), self.pitchrot)
-        else:
-            rot = np.dot(np.dot(self.yawrot, self.pitchrot), self.rollrot)
+        # Multiply matrices
+        rot = np.dot(np.dot(self.yawrot, self.pitchrot), self.rollrot)
 
         # Draw polygons
         for i in range(len(self.vehicle_faces)):
@@ -674,7 +664,6 @@ class MSPDriver(object):
         self.request = self.parser.serialize_Attitude_Request()
 
         self.yaw, self.pitch, self.roll = 0, 0, 0
-        self.active_axis = 0
         
         thread = threading.Thread(target = self._read_fmu)
         thread.daemon = True
@@ -722,8 +711,6 @@ if __name__ == "__main__":
 
     canvas.pack()
 
-    sim = Setup(driver, simulation=True)
-
-    sim.start()
+    Display(driver, simulation=True).start()
 
     mainloop()
