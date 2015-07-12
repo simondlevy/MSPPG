@@ -280,13 +280,14 @@ class JavaEmitter(CodeEmitter):
         self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
         self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float'}
 
-        self.output = open('./output/java/edu/wlu/cs/msppg/MSP_Parser.java', 'w')
+        self.output = open('./output/java/edu/wlu/cs/msppg/Parser.java', 'w')
 
         self._write(self.warning('//'))
 
         self._write(self._getsrc('top-java'))
 
         for msgtype in msgdict.keys():
+
             self._write(6*self.indent + 'case %s:\n' % msgdict[msgtype][0])
             self._write(7*self.indent + 'if (this.%s_handler != null) {\n' % msgtype)
             self._write(8*self.indent + 'this.%s_handler.handle_%s(\n' % (msgtype, msgtype));
@@ -373,11 +374,13 @@ class JavaEmitter(CodeEmitter):
 
 if __name__ == "__main__":
 
-    
-    if len(argv) < 2:
-        error('Usage: python %s INFILE' % argv[0])
 
-    infilename = argv[1]
+    # default to example as input file    
+    infilename = 'example.json'
+
+    # use input file from command line if specified
+    if len(argv) > 1:
+        infilename = argv[1]
 
     data = json.load(open(infilename))
  

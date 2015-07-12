@@ -18,9 +18,9 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 import edu.wlu.cs.msppg.*;
 
-public class example implements Raw_IMU_Handler {
+public class example implements Attitude_Handler {
 
-    public void handle_Raw_IMU(short pitch, short roll, short yaw) {
+    public void handle_Attitude(short pitch, short roll, short yaw) {
 
          System.out.printf("%+3d %+3d %+3d\n", pitch, roll, yaw);
     }
@@ -29,11 +29,11 @@ public class example implements Raw_IMU_Handler {
 
         Parser parser = new Parser();
 
-        byte [] buf = parser.serialize_Raw_IMU((short)59, (short)76, (short)1);
+        byte [] buf = parser.serialize_Attitude((short)59, (short)76, (short)1);
 
         example handler = new example();
 
-        parser.set_Raw_IMU_Handler(handler);
+        parser.set_Attitude_Handler(handler);
 
           for (byte b : buf) {
 
