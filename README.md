@@ -19,7 +19,7 @@ which will create output/python, output/java/ and output/cpp. You can cd to any 
 
 % make test
 
-to test the code.  In output/python you can also run the imutest.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from an a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
+to test the code.  In output/python you can also run the imutest.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
 
 % make jar
 
