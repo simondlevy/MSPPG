@@ -1,7 +1,7 @@
 # MSPPG
 Multiwii Serial Protocol Parser Generator
 
-The script msppg.py is ready to-run using your favorite Python interprter: command-line, IDLE, etc.  To install so you can run it anywhere, do
+The script msppg.py is ready to-run using your favorite Python interpreter: command-line, IDLE, etc.  To install so you can run it anywhere, do
 
 % python setup.py install
 
