@@ -93,6 +93,9 @@ class PythonEmitter(CodeEmitter):
     def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'python', 'py')
+        
+        self._copyfile('example.%s' % ext, 'output/python/imuexample.py')
+
         mkdir_if_missing('output/python/msppg')
 
         self._copyfile('setup.py', 'output/python/setup.py')
