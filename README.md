@@ -25,4 +25,6 @@ to test the code.  In output/python you can also run the imutest.py program, whi
 
 to build the msppg.jar file, which can then be used as a library for Android projects and other Java-based work.
 
-The example.json file currently contains only one message specification (Attitude), but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. The currently supported types are byte, short, and float, but we will likely add int as the need arises.
+The example.json file currently contains only one message specification (Attitude), but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
+
+MSPPG currently supports types byte, short, and float, but we will likely add int as the need arises.
