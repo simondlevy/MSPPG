@@ -702,7 +702,7 @@ if __name__ == "__main__":
 
     root = Tk()
 
-    root.geometry('%dx%d+%d+%d' % (width, height+200, 200, 200))
+    root.geometry('%dx%d+%d+%d' % (width, height, 200, 200))
     root.title('Setup')
 
     canvas = Canvas(root, width=width, height=height, background='black')
