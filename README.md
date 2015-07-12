@@ -1,5 +1,5 @@
 # MSPPG
-Multiwii Serial Protocol Parser Generator
+Multiwii Serial Protocol Parser Generator for Python, Java, and C++
 
 The script msppg.py is ready to-run using your favorite Python interpreter: command-line, IDLE, etc.  To install so you can run it anywhere, do
 
