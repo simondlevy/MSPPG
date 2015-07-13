@@ -98,6 +98,7 @@ void MSP_Parser::parse(byte b) {
             break;
 
         case 6:
+            this->state = 0;
             if (this->message_checksum == b) {
                 // message received, process
                 switch (this->message_id) {

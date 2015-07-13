@@ -23,13 +23,6 @@ class Parser(object):
         self.message_buffer =             None
         self.message_checksum =           0
 
-    def _serialize_request(self, message_id):
-
-        byte1 = 0
-        byte2 = message_id
-        chksum = byte1 ^ byte2
-        return '$M<' + chr(byte1) + chr(byte2) + chr(chksum)        
-
     def parse(self, char):
 
         byte = ord(char)

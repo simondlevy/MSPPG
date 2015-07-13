@@ -143,7 +143,7 @@ class PythonEmitter(CodeEmitter):
             self._write(2*self.indent + 'self.%s_Dispatcher = dispatcher\n\n' % msgtype)
 
             self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
-            self._write(2*self.indent + 'return self._serialize_request(%s)' % msgid)
+            self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % (msgid, msgid))
     
 
     def _write(self, s):
@@ -190,6 +190,8 @@ class CPPEmitter(CodeEmitter):
             self._write_params(self.houtput, argtypes, argnames)
             self._write_params(self.ahoutput, argtypes, argnames)
             self._hwrite(';\n\n')
+
+            self._hwrite(self.indent*2 + 'MSP_Message serialize_%s_Request();\n\n' % msgtype)
 
             self._cwrite(5*self.indent + ('case %s: {\n\n' % msgdict[msgtype][0]))
             nargs = len(argnames)
@@ -270,6 +272,17 @@ class CPPEmitter(CodeEmitter):
             self._cwrite(self.indent + 'msg.len = %d;\n\n' % (msgsize+6))
             self._cwrite(self.indent + 'return msg;\n')
             self._cwrite('}\n\n')
+ 
+            self._cwrite('MSP_Message MSP_Parser::serialize_%s_Request() {\n\n' % msgtype)
+            self._cwrite(self.indent + 'MSP_Message msg;\n\n')
+            self._cwrite(self.indent + 'msg.bytes[0] = 36;\n')
+            self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
+            self._cwrite(self.indent + 'msg.bytes[2] = 60;\n')
+            self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
+            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgdict[msgtype][0])
+            self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgdict[msgtype][0])
+            self._cwrite(self.indent + 'return msg;\n')
+            self._cwrite('}')
 
     def _cwrite(self, s):
 

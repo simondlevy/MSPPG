@@ -18,6 +18,8 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 #include <msppg.h>
 
+MSP_Parser parser;
+
 class My_Attitude_Handler : public Attitude_Handler {
 
     public:
@@ -37,20 +39,17 @@ void setup() {
 
     Serial.begin(9600); 
 
-    MSP_Parser parser;
-
-    MSP_Message message = parser.serialize_Attitude(59, 76, 1);
+    Serial1.begin(115200); 
 
     My_Attitude_Handler handler;
 
     parser.set_Attitude_Handler(&handler);
-
-    for (byte b=message.start(); message.hasNext(); b=message.getNext()) {
-
-        parser.parse(b);
-    }
 }
 
 void loop() {
 
+    if (Serial1.availalbe()) {
+
+        parser.parse(Serial1.read());
+    }
 }
