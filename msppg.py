@@ -150,7 +150,7 @@ class PythonEmitter(CodeEmitter):
 
         self.output.write(s)
 
-# C++ emitter ============================================================================
+# C++ / Arduino emitter ============================================================================
 
 class CPPEmitter(CodeEmitter):
 
@@ -167,11 +167,11 @@ class CPPEmitter(CodeEmitter):
 
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
 
-        self.coutput = open('./output/cpp/msppg/MSPPG.cpp', 'w')
-        self.houtput = open('./output/cpp/msppg/MSPPG.h', 'w')
+        self.coutput = open('./output/cpp/msppg/msppg.cpp', 'w')
+        self.houtput = open('./output/cpp/msppg/msppg.h', 'w')
 
-        self.acoutput = open('./output/arduino/MSPPG/MSPPG.cpp', 'w')
-        self.ahoutput = open('./output/arduino/MSPPG/MSPPG.h', 'w')
+        self.acoutput = open('./output/arduino/MSPPG/msppg.cpp', 'w')
+        self.ahoutput = open('./output/arduino/MSPPG/msppg.h', 'w')
 
         self._cwrite(self.warning('//'))
 
@@ -188,6 +188,7 @@ class CPPEmitter(CodeEmitter):
 
             self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
+            self._write_params(self.ahoutput, argtypes, argnames)
             self._hwrite(';\n\n')
 
             self._cwrite(5*self.indent + ('case %s: {\n\n' % msgdict[msgtype][0]))
@@ -234,6 +235,7 @@ class CPPEmitter(CodeEmitter):
             self._hwrite(2*self.indent + '%s_Handler() {}\n\n' % msgtype)
             self._hwrite(2*self.indent + 'virtual void handle_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
+            self._write_params(self.ahoutput, argtypes, argnames)
             self._hwrite('{ }\n\n')
             self._hwrite('};\n\n')
 
@@ -246,6 +248,7 @@ class CPPEmitter(CodeEmitter):
             # Add parser method for serializing message
             self._cwrite('MSP_Message MSP_Parser::serialize_%s' % msgtype)
             self._write_params(self.coutput, argtypes, argnames)
+            self._write_params(self.acoutput, argtypes, argnames)
             self._cwrite(' {\n\n')
             self._cwrite(self.indent + 'MSP_Message msg;\n\n')
             msgsize = self._msgsize(argtypes)
