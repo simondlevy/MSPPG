@@ -159,10 +159,19 @@ class CPPEmitter(CodeEmitter):
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
 
+        mkdir_if_missing('output/arduino')
+        mkdir_if_missing('output/arduino/MSPPG')
+        mkdir_if_missing('output/arduino/MSPPG/examples')
+        mkdir_if_missing('output/arduino/MSPPG/examples/imuexample')
+        self._copyfile('imuexample.ino', 'output/arduino/MSPPG/examples/imuexample/imuexample.ino')
+
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
 
-        self.coutput = open('./output/cpp/msppg/msppg.cpp', 'w')
-        self.houtput = open('./output/cpp/msppg/msppg.h', 'w')
+        self.coutput = open('./output/cpp/msppg/MSPPG.cpp', 'w')
+        self.houtput = open('./output/cpp/msppg/MSPPG.h', 'w')
+
+        self.acoutput = open('./output/arduino/MSPPG/MSPPG.cpp', 'w')
+        self.ahoutput = open('./output/arduino/MSPPG/MSPPG.h', 'w')
 
         self._cwrite(self.warning('//'))
 
@@ -262,10 +271,12 @@ class CPPEmitter(CodeEmitter):
     def _cwrite(self, s):
 
         self.coutput.write(s)
+        self.acoutput.write(s)
 
     def _hwrite(self, s):
 
         self.houtput.write(s)
+        self.ahoutput.write(s)
 
 # Java emitter =====================================================================================================
 
