@@ -227,6 +227,7 @@ class CPPEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
+            msigd = msgstuff[0]
 
             argnames  = msgstuff[1]
             argtypes = msgstuff[2]
@@ -241,7 +242,7 @@ class CPPEmitter(CodeEmitter):
             self._hwrite('{ }\n\n')
             self._hwrite('};\n\n')
 
-            # Add parser method for setting handler
+            
             self._cwrite('void MSP_Parser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
                     (msgtype, msgtype))
             self._cwrite(self.indent + 'this->handlerFor%s = handler;\n' % msgtype)
@@ -258,7 +259,7 @@ class CPPEmitter(CodeEmitter):
             self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
             self._cwrite(self.indent + 'msg.bytes[2] = 62;\n')
             self._cwrite(self.indent + 'msg.bytes[3] = %d;\n' % msgsize)
-            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n\n' % msgdict[msgtype][0])
+            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n\n' % msgid)
             nargs = len(argnames)
             offset = 5
             for k in range(nargs):
@@ -279,8 +280,8 @@ class CPPEmitter(CodeEmitter):
             self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
             self._cwrite(self.indent + 'msg.bytes[2] = 60;\n')
             self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
-            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgdict[msgtype][0])
-            self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgdict[msgtype][0])
+            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgid)
+            self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgid)
             self._cwrite(self.indent + 'return msg;\n')
             self._cwrite('}')
 
