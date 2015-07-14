@@ -282,6 +282,7 @@ class CPPEmitter(CodeEmitter):
             self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
             self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgid)
             self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgid)
+            self._cwrite(self.indent + 'msg.len = 6;\n\n')
             self._cwrite(self.indent + 'return msg;\n')
             self._cwrite('}')
 

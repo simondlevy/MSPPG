@@ -20,6 +20,13 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 MSP_Parser parser;
 
+MSP_Message message = parser.serialize_Attitude_Request();
+
+static void send_request() {
+
+
+}
+
 class My_Attitude_Handler : public Attitude_Handler {
 
     public:
@@ -44,11 +51,13 @@ void setup() {
     My_Attitude_Handler handler;
 
     parser.set_Attitude_Handler(&handler);
+
+    send_request();
 }
 
 void loop() {
 
-    if (Serial1.availalbe()) {
+    if (Serial1.available()) {
 
         parser.parse(Serial1.read());
     }

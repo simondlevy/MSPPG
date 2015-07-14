@@ -80,6 +80,7 @@ public class Parser {
             case 4:
                 this.message_id = b;
                 this.message_checksum ^= b;
+                this.message_buffer.reset();
                 if (this.message_length_expected > 0) {
                     // process payload
                     this.state++;
@@ -100,6 +101,7 @@ public class Parser {
                 break;
 
             case 6:
+                this.state = 0;
                 if (this.message_checksum == b) {
 
                     ByteBuffer bb = newByteBuffer(this.message_length_received);
