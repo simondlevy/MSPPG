@@ -2,5 +2,23 @@
   "Attitude": [{"ID": 108},
                {"x": "short"}, 
                {"y": "short"},
-               {"z": "short"}]
+               {"z": "short"}],
+
+  "RC":       [{"ID": 105},
+               {"c01": "short"}, 
+               {"c02": "short"}, 
+               {"c03": "short"}, 
+               {"c04": "short"}, 
+               {"c05": "short"}, 
+               {"c06": "short"}, 
+               {"c07": "short"}, 
+               {"c08": "short"}, 
+               {"c09": "short"}, 
+               {"c10": "short"}, 
+               {"c11": "short"}, 
+               {"c12": "short"}, 
+               {"c13": "short"}, 
+               {"c14": "short"}, 
+               {"c15": "short"}, 
+               {"c16": "short"}]
 }
