@@ -109,9 +109,9 @@ class PythonEmitter(CodeEmitter):
         self._write(self._getsrc('top-py') + '\n')
 
         for msgtype in msgdict.keys():
-            self._write(5*self.indent + ('if self.message_id == %d:\n\n' % msgdict[msgtype][0]))
-            self._write(6*self.indent + 'if hasattr(self, \'' +  msgtype + '_Dispatcher\'):\n\n')
-            self._write(7*self.indent + 'self.%s_Dispatcher(*struct.unpack(\'' % msgtype)
+            self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgdict[msgtype][0]))
+            self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Dispatcher\'):\n\n')
+            self._write(6*self.indent + 'self.%s_Dispatcher(*struct.unpack(\'' % msgtype)
             for argtype in msgdict[msgtype][2]:
                 self._write('%s' % self.type2pack[argtype])
             self._write("\'" + ', self.message_buffer))\n\n')
@@ -120,7 +120,7 @@ class PythonEmitter(CodeEmitter):
 
         for msgtype in msgdict.keys():
 
-            msigd = msgdict[msgtype][0]
+            msgid = msgdict[msgtype][0]
 
             self._write(self.indent + 'def serialize_' + msgtype + '(self')
             msgstuff = msgdict[msgtype]

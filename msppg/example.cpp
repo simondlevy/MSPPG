@@ -28,9 +28,9 @@ class My_Attitude_Handler : public Attitude_Handler {
 
     public:
 
-        void handle_Attitude(short pitch, short roll, short yaw) {
+        void handle_Attitude(short angx, short angy, short heading) {
 
-            printf("%+3d %+3d %+3d\n", pitch, roll, yaw);
+            printf("%+3d %+3d %+3d\n", angx, angy, heading);
         }
 
 };

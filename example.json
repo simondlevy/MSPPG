@@ -1,8 +1,8 @@
 {
   "Attitude": [{"ID": 108},
-               {"x": "short"}, 
-               {"y": "short"},
-               {"z": "short"}],
+               {"angx"   : "short"}, 
+               {"angy"   : "short"},
+               {"heading": "short"}],
 
   "RC":       [{"ID": 105},
                {"c01": "short"}, 

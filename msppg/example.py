@@ -22,9 +22,9 @@ from msppg import Parser
 
 parser = Parser()
 
-def dispatcher(pitch, roll, yaw):
+def dispatcher(angx, angy, heading):
 
-    print(pitch, roll, yaw)
+    print(angx, angy, heading)
 
 parser.attach_Attitude_Dispatcher(dispatcher)
 

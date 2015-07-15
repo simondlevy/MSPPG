@@ -20,9 +20,9 @@ import edu.wlu.cs.msppg.*;
 
 public class example implements Attitude_Handler {
 
-    public void handle_Attitude(short pitch, short roll, short yaw) {
+    public void handle_Attitude(short angx, short angy, short heading) {
 
-         System.out.printf("%+3d %+3d %+3d\n", pitch, roll, yaw);
+         System.out.printf("%+3d %+3d %+3d\n", angx, angy, heading);
     }
 
     public static void main(String [] argv) {
