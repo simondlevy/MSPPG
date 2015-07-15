@@ -86,6 +86,19 @@ class CodeEmitter(object):
 
         return resource_string('msppg', filename)
  
+    def _getargnames(self, message):
+
+        return [argname for (argname,_) in self._getargs(message)]
+
+    def _getargtypes(self, message):
+
+        return [argtype for (_,argtype) in self._getargs(message)]
+
+    def _getargs(self, message):
+
+        return [(argname,argtype) for (argname,argtype) in zip(message[1], message[2]) if argname.lower()!='comment']
+
+
 # Python emitter ============================================================================
 
 class PythonEmitter(CodeEmitter):
@@ -109,10 +122,11 @@ class PythonEmitter(CodeEmitter):
         self._write(self._getsrc('top-py') + '\n')
 
         for msgtype in msgdict.keys():
-            self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgdict[msgtype][0]))
+            msgstuff = msgdict[msgtype]
+            self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgstuff[0]))
             self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Dispatcher\'):\n\n')
             self._write(6*self.indent + 'self.%s_Dispatcher(*struct.unpack(\'' % msgtype)
-            for argtype in msgdict[msgtype][2]:
+            for argtype in self._getargtypes(msgstuff):
                 self._write('%s' % self.type2pack[argtype])
             self._write("\'" + ', self.message_buffer))\n\n')
 
@@ -120,21 +134,19 @@ class PythonEmitter(CodeEmitter):
 
         for msgtype in msgdict.keys():
 
-            msgid = msgdict[msgtype][0]
+            msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
 
             self._write(self.indent + 'def serialize_' + msgtype + '(self')
-            msgstuff = msgdict[msgtype]
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
-            for arg in argnames:
-                self._write(', ' + arg)
+            for argname in self._getargnames(msgstuff):
+                self._write(', ' + argname)
             self._write('):\n\n')
             self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
-            for argtype in argtypes:
+            for argtypes in self._getargtypes(msgstuff):
                 self._write(self.type2pack[argtype])
             self._write('\'')
-            for arg in argnames:
-                self._write(', ' + arg)
+            for argname in self._getargnames(msgstuff):
+                self._write(', ' + argname)
             self._write(')\n\n')
             self._write(self.indent*2 + ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
             self._write(self.indent*2 + 'return \'$M>\' + msg + chr(_CRC8(msg))\n\n')
@@ -144,7 +156,6 @@ class PythonEmitter(CodeEmitter):
 
             self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
             self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % (msgid, msgid))
-    
 
     def _write(self, s):
 
@@ -183,8 +194,8 @@ class CPPEmitter(CodeEmitter):
 
             msgstuff = msgdict[msgtype]
 
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
+            argnames = self._getargnames(msgstuff)
+            argtypes = self._getargtypes(msgstuff)
 
             self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
@@ -229,8 +240,8 @@ class CPPEmitter(CodeEmitter):
             msgstuff = msgdict[msgtype]
             msgid = msgstuff[0]
 
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
+            argnames = self._getargnames(msgstuff)
+            argtypes = self._getargtypes(msgstuff)
 
             # Add handler class declaration to header
             self._hwrite('\n\n' + 'class %s_Handler {\n' % msgtype)
@@ -325,8 +336,10 @@ class JavaEmitter(CodeEmitter):
             self._write(8*self.indent + 'this.%s_handler.handle_%s(\n' % (msgtype, msgtype));
 
             msgstuff = msgdict[msgtype]
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
+
+            argnames = self._getargnames(msgstuff)
+            argtypes = self._getargtypes(msgstuff)
+
             nargs = len(argnames)
 
             offset = 0
@@ -346,8 +359,9 @@ class JavaEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
+
+            argnames = self._getargnames(msgstuff)
+            argtypes = self._getargtypes(msgstuff)
 
             self._write(self.indent + 'private %s_Handler %s_handler;\n\n' % (msgtype, msgtype))
 
@@ -386,8 +400,9 @@ class JavaEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
-            argnames  = msgstuff[1]
-            argtypes = msgstuff[2]
+
+            argnames = self._getargnames(msgstuff)
+            argtypes = self._getargtypes(msgstuff)
 
             self.output = open('./output/java/edu/wlu/cs/msppg/%s_Handler.java' % msgtype, 'w')
             self.output.write(self.warning('//'))
