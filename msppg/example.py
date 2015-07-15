@@ -22,11 +22,11 @@ from msppg import Parser
 
 parser = Parser()
 
-def dispatcher(angx, angy, heading):
+def handler(angx, angy, heading):
 
     print(angx, angy, heading)
 
-parser.attach_Attitude_Dispatcher(dispatcher)
+parser.set_Attitude_Handler(handler)
 
 for c in parser.serialize_Attitude(59, 76, 1):
 

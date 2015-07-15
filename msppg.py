@@ -124,8 +124,8 @@ class PythonEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
             msgstuff = msgdict[msgtype]
             self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgstuff[0]))
-            self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Dispatcher\'):\n\n')
-            self._write(6*self.indent + 'self.%s_Dispatcher(*struct.unpack(\'' % msgtype)
+            self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Handler\'):\n\n')
+            self._write(6*self.indent + 'self.%s_Handler(*struct.unpack(\'' % msgtype)
             for argtype in self._getargtypes(msgstuff):
                 self._write('%s' % self.type2pack[argtype])
             self._write("\'" + ', self.message_buffer))\n\n')
@@ -151,8 +151,8 @@ class PythonEmitter(CodeEmitter):
             self._write(self.indent*2 + ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
             self._write(self.indent*2 + 'return \'$M>\' + msg + chr(_CRC8(msg))\n\n')
 
-            self._write(self.indent + 'def attach_%s_Dispatcher(self, dispatcher):\n\n' % msgtype) 
-            self._write(2*self.indent + 'self.%s_Dispatcher = dispatcher\n\n' % msgtype)
+            self._write(self.indent + 'def set_%s_Handler(self, handler):\n\n' % msgtype) 
+            self._write(2*self.indent + 'self.%s_Handler = handler\n\n' % msgtype)
 
             self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
             self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % (msgid, msgid))
