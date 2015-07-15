@@ -44,7 +44,6 @@ class CodeEmitter(object):
     def __init__(self, folder, ext):
 
         mkdir_if_missing('output/%s' % folder)
-        self._copyfile('example.%s' % ext, 'output/%s/example.%s' % (folder, ext))
         self._copyfile('%s.makefile' % folder, 'output/%s/Makefile' % folder)
 
         self.indent = '    '
@@ -107,7 +106,8 @@ class PythonEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copyfile('imuexample.py', 'output/python/imuexample.py')
+        self._copyfile('attitude.py', 'output/python/attitude.py')
+        self._copyfile('rc.py', 'output/python/rc.py')
 
         mkdir_if_missing('output/python/msppg')
 
@@ -169,6 +169,7 @@ class CPPEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
+        self._copyfile('example.cpp', 'output/cpp/example.cpp')
 
         mkdir_if_missing('output/arduino')
         mkdir_if_missing('output/arduino/MSPPG')
@@ -314,6 +315,8 @@ class JavaEmitter(CodeEmitter):
     def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'java', 'java')
+
+        self._copyfile('example.java', 'output/cpp/example.java')
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')

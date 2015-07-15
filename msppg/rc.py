@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 '''
-Python distutils setup file for installing Python output of MSPPG
+rc.py Uses MSPPG to request and handle RC messages from flight controller
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -16,7 +18,32 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-from distutils.core import setup
+BAUD = 115200
 
-setup(name = 'msppg',
-      packages = ['msppg'])
+from msppg import Parser
+import serial
+
+from sys import argv
+
+if len(argv) < 2:
+
+    print('Usage: python %s PORT' % argv[0])
+    print('Example: python %s /dev/ttyUSB0' % argv[0])
+    exit(1)
+
+parser = Parser()
+request = parser.serialize_RC_Request()
+port = serial.Serial(argv[1], BAUD)
+
+def handler(c1, c2, c3, c4, c5, c6, c7, c8):
+
+    print(c1, c2, c3, c4, c5)
+    port.write(request)
+
+parser.set_RC_Handler(handler)
+
+port.write(request)
+
+while True:
+
+    parser.parse(port.read(1))

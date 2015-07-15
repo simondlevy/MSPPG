@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Example for testing Python output of MSPPG
+attitude.py Uses MSPPG to request and handle ATTITUDE messages from flight controller
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -16,18 +16,36 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License 
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
- '''
+'''
+
+BAUD = 115200
 
 from msppg import Parser
+import serial
+
+from sys import argv
+
+if len(argv) < 2:
+
+    print('Usage: python %s PORT' % argv[0])
+    print('Example: python %s /dev/ttyUSB0' % argv[0])
+    exit(1)
 
 parser = Parser()
+request = parser.serialize_Attitude_Request()
+port = serial.Serial(argv[1], BAUD)
 
-def handler(angx, angy, heading):
+def handler(pitch, roll, yaw):
 
-    print(angx, angy, heading)
+    print(pitch, roll, yaw)
+    port.write(request)
 
 parser.set_Attitude_Handler(handler)
 
-for c in parser.serialize_Attitude(59, 76, 1):
+port.write(request)
 
-    parser.parse(c)
+while True:
+
+    parser.parse(port.read(1))
+
+
