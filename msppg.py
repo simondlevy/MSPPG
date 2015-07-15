@@ -227,7 +227,7 @@ class CPPEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
-            msigd = msgstuff[0]
+            msgid = msgstuff[0]
 
             argnames  = msgstuff[1]
             argtypes = msgstuff[2]
