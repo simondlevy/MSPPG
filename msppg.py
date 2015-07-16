@@ -342,7 +342,7 @@ class JavaEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'java', 'java')
 
-        self._copyfile('example.java', 'output/cpp/example.java')
+        self._copyfile('example.java', 'output/java/example.java')
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')
@@ -360,7 +360,7 @@ class JavaEmitter(CodeEmitter):
 
         for msgtype in msgdict.keys():
 
-            self._write(6*self.indent + 'case %s:\n' % msgdict[msgtype][0])
+            self._write(6*self.indent + 'case (byte)%s:\n' % msgdict[msgtype][0])
             self._write(7*self.indent + 'if (this.%s_handler != null) {\n' % msgtype)
             self._write(8*self.indent + 'this.%s_handler.handle_%s(\n' % (msgtype, msgtype));
 
@@ -414,7 +414,7 @@ class JavaEmitter(CodeEmitter):
             self._write(2*self.indent + 'message[1] = 77;\n')
             self._write(2*self.indent + 'message[2] = 62;\n')
             self._write(2*self.indent + 'message[3] = %d;\n' % msgsize)
-            self._write(2*self.indent + 'message[4] = %d;\n' %msgdict[msgtype][0]) 
+            self._write(2*self.indent + 'message[4] = (byte)%d;\n' %msgdict[msgtype][0]) 
             self._write(2*self.indent + 'byte [] data = bb.array();\n')
             self._write(2*self.indent + 'for (int k=0; k<data.length; ++k) {\n')
             self._write(3*self.indent + 'message[k+5] = data[k];\n')
@@ -504,4 +504,4 @@ if __name__ == "__main__":
     CPPEmitter(msgdict)
 
     # Emite Java
-    #JavaEmitter(msgdict)
+    JavaEmitter(msgdict)

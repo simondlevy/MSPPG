@@ -18,9 +18,9 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 import edu.wlu.cs.msppg.*;
 
-public class example implements Attitude_Handler {
+public class example implements ATTITUDE_Handler {
 
-    public void handle_Attitude(short angx, short angy, short heading) {
+    public void handle_ATTITUDE(short angx, short angy, short heading) {
 
          System.out.printf("%+3d %+3d %+3d\n", angx, angy, heading);
     }
@@ -29,11 +29,11 @@ public class example implements Attitude_Handler {
 
         Parser parser = new Parser();
 
-        byte [] buf = parser.serialize_Attitude((short)59, (short)76, (short)1);
+        byte [] buf = parser.serialize_ATTITUDE((short)59, (short)76, (short)1);
 
         example handler = new example();
 
-        parser.set_Attitude_Handler(handler);
+        parser.set_ATTITUDE_Handler(handler);
 
           for (byte b : buf) {
 
