@@ -32,7 +32,7 @@ if len(argv) < 2:
     exit(1)
 
 parser = Parser()
-request = parser.serialize_Attitude_Request()
+request = parser.serialize_ATTITUDE_Request()
 port = serial.Serial(argv[1], BAUD)
 
 def handler(pitch, roll, yaw):
@@ -40,12 +40,11 @@ def handler(pitch, roll, yaw):
     print(pitch, roll, yaw)
     port.write(request)
 
-parser.set_Attitude_Handler(handler)
+parser.set_ATTITUDE_Handler(handler)
 
 port.write(request)
 
 while True:
 
     parser.parse(port.read(1))
-
 
