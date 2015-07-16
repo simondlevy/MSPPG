@@ -16,11 +16,14 @@
 # You should have received a copy of the GNU Lesser General Public License 
 # along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
+PORT = /dev/ttyUSB0
+#PORT = COM3
+
 install:
 	sudo python setup.py install
 
 test: 
-	python example.py
+	python attitude.py $(PORT)
   
 clean:
 	rm -f *.pyc
