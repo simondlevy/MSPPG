@@ -153,7 +153,8 @@ class PythonEmitter(CodeEmitter):
             self._write(')\n\n')
             self._write(self.indent*2 + 
                     ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
-            self._write(self.indent*2 + 'return \'$M>\' + msg + chr(_CRC8(msg))\n\n')
+            self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
+                    ('>' if msgid < 200 else '<'))
 
             # incoming message types
             if msgid < 200:
@@ -286,7 +287,7 @@ class CPPEmitter(CodeEmitter):
                 self._cwrite(self.indent + 'MSP_Message msg;\n\n')
                 self._cwrite(self.indent + 'msg.bytes[0] = 36;\n')
                 self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
-                self._cwrite(self.indent + 'msg.bytes[2] = 60;\n')
+                self._cwrite(self.indent + 'msg.bytes[2] = %d;\n' % 60 if msgid < 200 else 62)
                 self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
                 self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgid)
                 self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgid)
