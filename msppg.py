@@ -397,21 +397,36 @@ class JavaEmitter(CodeEmitter):
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
 
-            # Declare handlers for outgoing messages only
+            # For messages from FC
             if msgid < 200:
+
+                # Declare handler
                 self._write(self.indent + 'private %s_Handler %s_handler;\n\n' % (msgtype, msgtype))
                 self._write(self.indent + 
                         'public void set_%s_Handler(%s_Handler handler) {\n\n' % (msgtype, msgtype))
                 self._write(2*self.indent + 'this.%s_handler = handler;\n' % msgtype)
                 self._write(self.indent + '}\n\n')
 
+                # Write serializer for requests
+                self._write(self.indent + 'public byte [] serialize_%s_Request() {\n\n' % msgtype)
+                paysize = self._paysize(argtypes)
+                msgsize = self._msgsize(argtypes)
+                self._write('\n' + 2*self.indent + 'byte [] message = new byte[6];\n\n')
+                self._write(2*self.indent + 'message[0] = 36;\n')
+                self._write(2*self.indent + 'message[1] = 77;\n')
+                self._write(2*self.indent + 'message[2] = 60;\n')
+                self._write(2*self.indent + 'message[3] = 0;\n')
+                self._write(2*self.indent + 'message[4] = (byte)%d;\n' % msgid)
+                self._write(2*self.indent + 'message[5] = (byte)%d;\n\n' % msgid)
+                self._write(2*self.indent + 'return message;\n')
+                self._write(self.indent + '}\n\n')
+
+            # Write serializer method for messages from FC
             self._write(self.indent + 'public byte [] serialize_%s' % msgtype)
             self._write_params(self.output, argtypes, argnames)
             self._write(' {\n\n')
-
             paysize = self._paysize(argtypes)
             msgsize = self._msgsize(argtypes)
-
             self._write(2*self.indent + 'ByteBuffer bb = newByteBuffer(%d);\n\n' % paysize)
             for (argname,argtype) in zip(argnames,argtypes):
                 self._write(2*self.indent + 'bb.put%s(%s);\n' % (self.type2bb[argtype], argname))
