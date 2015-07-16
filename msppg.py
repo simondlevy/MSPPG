@@ -358,46 +358,52 @@ class JavaEmitter(CodeEmitter):
 
         self._write(self._getsrc('top-java'))
 
+        # Write handler cases for incoming messages
         for msgtype in msgdict.keys():
 
-            self._write(6*self.indent + 'case (byte)%s:\n' % msgdict[msgtype][0])
-            self._write(7*self.indent + 'if (this.%s_handler != null) {\n' % msgtype)
-            self._write(8*self.indent + 'this.%s_handler.handle_%s(\n' % (msgtype, msgtype));
-
             msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
 
-            argnames = self._getargnames(msgstuff)
-            argtypes = self._getargtypes(msgstuff)
+            if msgid < 200:
 
-            nargs = len(argnames)
+                self._write(6*self.indent + 'case (byte)%d:\n' % msgid)
+                self._write(7*self.indent + 'if (this.%s_handler != null) {\n' % msgtype)
+                self._write(8*self.indent + 'this.%s_handler.handle_%s(\n' % (msgtype, msgtype));
 
-            offset = 0
-            for k in range(nargs):
-                argtype = argtypes[k]
-                self._write(8*self.indent + 'bb.get%s(%d)' % (self.type2bb[argtype], offset))
-                offset += self.type2size[argtype]
-                if k < nargs-1:
-                    self._write(',\n')
-            self._write(');\n')
+                argnames = self._getargnames(msgstuff)
+                argtypes = self._getargtypes(msgstuff)
 
-            self._write(7*self.indent + '}\n')
-            self._write(7*self.indent + 'break;\n\n')
+                nargs = len(argnames)
+
+                offset = 0
+                for k in range(nargs):
+                    argtype = argtypes[k]
+                    self._write(8*self.indent + 'bb.get%s(%d)' % (self.type2bb[argtype], offset))
+                    offset += self.type2size[argtype]
+                    if k < nargs-1:
+                        self._write(',\n')
+                self._write(');\n')
+
+                self._write(7*self.indent + '}\n')
+                self._write(7*self.indent + 'break;\n\n')
 
         self._write(self._getsrc('bottom-java'))
 
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
 
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
 
-            self._write(self.indent + 'private %s_Handler %s_handler;\n\n' % (msgtype, msgtype))
-
-            self._write(self.indent + 
-                    'public void set_%s_Handler(%s_Handler handler) {\n\n' % (msgtype, msgtype))
-            self._write(2*self.indent + 'this.%s_handler = handler;\n' % msgtype)
-            self._write(self.indent + '}\n\n')
+            # Declare handlers for outgoing messages only
+            if msgid < 200:
+                self._write(self.indent + 'private %s_Handler %s_handler;\n\n' % (msgtype, msgtype))
+                self._write(self.indent + 
+                        'public void set_%s_Handler(%s_Handler handler) {\n\n' % (msgtype, msgtype))
+                self._write(2*self.indent + 'this.%s_handler = handler;\n' % msgtype)
+                self._write(self.indent + '}\n\n')
 
             self._write(self.indent + 'public byte [] serialize_%s' % msgtype)
             self._write_params(self.output, argtypes, argnames)
