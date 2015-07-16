@@ -95,7 +95,8 @@ class CodeEmitter(object):
 
     def _getargs(self, message):
 
-        return [(argname,argtype) for (argname,argtype) in zip(message[1], message[2]) if argname.lower()!='comment']
+        return [(argname,argtype) for (argname,argtype) in 
+                zip(message[1], message[2]) if argname.lower()!='comment']
 
 
 # Python emitter ============================================================================
@@ -123,12 +124,14 @@ class PythonEmitter(CodeEmitter):
 
         for msgtype in msgdict.keys():
             msgstuff = msgdict[msgtype]
-            self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgstuff[0]))
-            self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Handler\'):\n\n')
-            self._write(6*self.indent + 'self.%s_Handler(*struct.unpack(\'' % msgtype)
-            for argtype in self._getargtypes(msgstuff):
-                self._write('%s' % self.type2pack[argtype])
-            self._write("\'" + ', self.message_buffer))\n\n')
+            msgid = msgstuff[0]
+            if msgid < 200:
+                self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgstuff[0]))
+                self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Handler\'):\n\n')
+                self._write(6*self.indent + 'self.%s_Handler(*struct.unpack(\'' % msgtype)
+                for argtype in self._getargtypes(msgstuff):
+                    self._write('%s' % self.type2pack[argtype])
+                self._write("\'" + ', self.message_buffer))\n\n')
 
         self._write(self._getsrc('bottom-py') + '\n')
 
@@ -148,14 +151,19 @@ class PythonEmitter(CodeEmitter):
             for argname in self._getargnames(msgstuff):
                 self._write(', ' + argname)
             self._write(')\n\n')
-            self._write(self.indent*2 + ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
+            self._write(self.indent*2 + 
+                    ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
             self._write(self.indent*2 + 'return \'$M>\' + msg + chr(_CRC8(msg))\n\n')
 
-            self._write(self.indent + 'def set_%s_Handler(self, handler):\n\n' % msgtype) 
-            self._write(2*self.indent + 'self.%s_Handler = handler\n\n' % msgtype)
+            # incoming message types
+            if msgid < 200:
 
-            self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
-            self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % (msgid, msgid))
+                self._write(self.indent + 'def set_%s_Handler(self, handler):\n\n' % msgtype) 
+                self._write(2*self.indent + 'self.%s_Handler = handler\n\n' % msgtype)
+
+                self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
+                self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % 
+                        (msgid, msgid))
 
     def _write(self, s):
 
@@ -194,6 +202,7 @@ class CPPEmitter(CodeEmitter):
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
 
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
@@ -203,34 +212,43 @@ class CPPEmitter(CodeEmitter):
             self._write_params(self.ahoutput, argtypes, argnames)
             self._hwrite(';\n\n')
 
-            self._hwrite(self.indent*2 + 'MSP_Message serialize_%s_Request();\n\n' % msgtype)
+            # Write handler code for incoming messages
+            if msgid < 200:
 
-            self._cwrite(5*self.indent + ('case %s: {\n\n' % msgdict[msgtype][0]))
-            nargs = len(argnames)
-            offset = 0
-            for k in range(nargs):
-                argname = argnames[k]
-                argtype = argtypes[k]
-                decl = self.type2decl[argtype]
-                self._cwrite(6*self.indent + decl  + ' ' + argname + ';\n')
-                self._cwrite(6*self.indent + 'memcpy(&%s,  &this->message_buffer[%d], sizeof(%s));\n\n' % 
-                        (argname, offset, decl))
-                offset += self.type2size[argtype]
-            self._cwrite(6*self.indent + 'this->handlerFor%s->handle_%s(' % (msgtype, msgtype))
-            for k in range(nargs):
-                self._cwrite(argnames[k])
-                if k < nargs-1:
-                    self._cwrite(', ')
-            self._cwrite(');\n')
-            self._cwrite(6*self.indent + '} break;\n\n')
-            
-            self._hwrite(self.indent*2 + 'void set_%s_Handler(class %s_Handler * handler);\n\n' % (msgtype, msgtype))
+                self._cwrite(5*self.indent + ('case %s: {\n\n' % msgdict[msgtype][0]))
+                nargs = len(argnames)
+                offset = 0
+                for k in range(nargs):
+                    argname = argnames[k]
+                    argtype = argtypes[k]
+                    decl = self.type2decl[argtype]
+                    self._cwrite(6*self.indent + decl  + ' ' + argname + ';\n')
+                    self._cwrite(6*self.indent + 
+                            'memcpy(&%s,  &this->message_buffer[%d], sizeof(%s));\n\n' % 
+                            (argname, offset, decl))
+                    offset += self.type2size[argtype]
+                self._cwrite(6*self.indent + 'this->handlerFor%s->handle_%s(' % (msgtype, msgtype))
+                for k in range(nargs):
+                    self._cwrite(argnames[k])
+                    if k < nargs-1:
+                        self._cwrite(', ')
+                self._cwrite(');\n')
+                self._cwrite(6*self.indent + '} break;\n\n')
+                
+                self._hwrite(self.indent*2 + 'MSP_Message serialize_%s_Request();\n\n' % msgtype)
+                self._hwrite(self.indent*2 + 
+                        'void set_%s_Handler(class %s_Handler * handler);\n\n' % (msgtype, msgtype))
 
         self._hwrite(self.indent + 'private:\n\n')
 
         for msgtype in msgdict.keys():
-         
-            self._hwrite(2*self.indent + 'class %s_Handler * handlerFor%s;\n\n' % (msgtype, msgtype));
+
+            msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
+            
+            if msgid < 200:
+                self._hwrite(2*self.indent + 
+                        'class %s_Handler * handlerFor%s;\n\n' % (msgtype, msgtype));
 
         self._hwrite('};\n');
 
@@ -244,21 +262,38 @@ class CPPEmitter(CodeEmitter):
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
 
-            # Add handler class declaration to header
-            self._hwrite('\n\n' + 'class %s_Handler {\n' % msgtype)
-            self._hwrite('\n' + self.indent + 'public:\n\n')
-            self._hwrite(2*self.indent + '%s_Handler() {}\n\n' % msgtype)
-            self._hwrite(2*self.indent + 'virtual void handle_%s' % msgtype)
-            self._write_params(self.houtput, argtypes, argnames)
-            self._write_params(self.ahoutput, argtypes, argnames)
-            self._hwrite('{ }\n\n')
-            self._hwrite('};\n\n')
+            # Incoming messages
+            if msgid < 200:
 
-            
-            self._cwrite('void MSP_Parser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
-                    (msgtype, msgtype))
-            self._cwrite(self.indent + 'this->handlerFor%s = handler;\n' % msgtype)
-            self._cwrite('}\n\n')
+                # Declare handler class
+                self._hwrite('\n\n' + 'class %s_Handler {\n' % msgtype)
+                self._hwrite('\n' + self.indent + 'public:\n\n')
+                self._hwrite(2*self.indent + '%s_Handler() {}\n\n' % msgtype)
+                self._hwrite(2*self.indent + 'virtual void handle_%s' % msgtype)
+                self._write_params(self.houtput, argtypes, argnames)
+                self._write_params(self.ahoutput, argtypes, argnames)
+                self._hwrite('{ }\n\n')
+                self._hwrite('};\n\n')
+                
+                # Write handler method
+                self._cwrite('void MSP_Parser::set_%s_Handler(class %s_Handler * handler) {\n\n' %
+                        (msgtype, msgtype))
+                self._cwrite(self.indent + 'this->handlerFor%s = handler;\n' % msgtype)
+                self._cwrite('}\n\n')
+
+                # Write request method
+                self._cwrite('MSP_Message MSP_Parser::serialize_%s_Request() {\n\n' % msgtype)
+                self._cwrite(self.indent + 'MSP_Message msg;\n\n')
+                self._cwrite(self.indent + 'msg.bytes[0] = 36;\n')
+                self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
+                self._cwrite(self.indent + 'msg.bytes[2] = 60;\n')
+                self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
+                self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgid)
+                self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgid)
+                self._cwrite(self.indent + 'msg.len = 6;\n\n')
+                self._cwrite(self.indent + 'return msg;\n')
+                self._cwrite('}')
+
 
             # Add parser method for serializing message
             self._cwrite('MSP_Message MSP_Parser::serialize_%s' % msgtype)
@@ -278,26 +313,16 @@ class CPPEmitter(CodeEmitter):
                 argname = argnames[k]
                 argtype = argtypes[k]
                 decl = self.type2decl[argtype]
-                self._cwrite(self.indent + 'memcpy(&msg.bytes[%d], &%s, sizeof(%s));\n' %  (offset, argname, decl))
+                self._cwrite(self.indent + 
+                        'memcpy(&msg.bytes[%d], &%s, sizeof(%s));\n' %  (offset, argname, decl))
                 offset += self.type2size[argtype]
             self._cwrite('\n')
-            self._cwrite(self.indent + 'msg.bytes[%d] = CRC8(&msg.bytes[3], %d);\n\n' % (msgsize+5, msgsize+2))
+            self._cwrite(self.indent + 
+                    'msg.bytes[%d] = CRC8(&msg.bytes[3], %d);\n\n' % (msgsize+5, msgsize+2))
             self._cwrite(self.indent + 'msg.len = %d;\n\n' % (msgsize+6))
             self._cwrite(self.indent + 'return msg;\n')
             self._cwrite('}\n\n')
  
-            self._cwrite('MSP_Message MSP_Parser::serialize_%s_Request() {\n\n' % msgtype)
-            self._cwrite(self.indent + 'MSP_Message msg;\n\n')
-            self._cwrite(self.indent + 'msg.bytes[0] = 36;\n')
-            self._cwrite(self.indent + 'msg.bytes[1] = 77;\n')
-            self._cwrite(self.indent + 'msg.bytes[2] = 60;\n')
-            self._cwrite(self.indent + 'msg.bytes[3] = 0;\n')
-            self._cwrite(self.indent + 'msg.bytes[4] = %d;\n' % msgid)
-            self._cwrite(self.indent + 'msg.bytes[5] = %d;\n\n' % msgid)
-            self._cwrite(self.indent + 'msg.len = 6;\n\n')
-            self._cwrite(self.indent + 'return msg;\n')
-            self._cwrite('}')
-
     def _cwrite(self, s):
 
         self.coutput.write(s)
@@ -308,7 +333,7 @@ class CPPEmitter(CodeEmitter):
         self.houtput.write(s)
         self.ahoutput.write(s)
 
-# Java emitter =====================================================================================================
+# Java emitter =======================================================================================
 
 class JavaEmitter(CodeEmitter):
 
@@ -368,7 +393,8 @@ class JavaEmitter(CodeEmitter):
 
             self._write(self.indent + 'private %s_Handler %s_handler;\n\n' % (msgtype, msgtype))
 
-            self._write(self.indent + 'public void set_%s_Handler(%s_Handler handler) {\n\n' % (msgtype, msgtype))
+            self._write(self.indent + 
+                    'public void set_%s_Handler(%s_Handler handler) {\n\n' % (msgtype, msgtype))
             self._write(2*self.indent + 'this.%s_handler = handler;\n' % msgtype)
             self._write(self.indent + '}\n\n')
 
@@ -392,7 +418,8 @@ class JavaEmitter(CodeEmitter):
             self._write(2*self.indent + 'for (int k=0; k<data.length; ++k) {\n')
             self._write(3*self.indent + 'message[k+5] = data[k];\n')
             self._write(2*self.indent + '}\n\n')
-            self._write(2*self.indent + 'message[%d] = CRC8(message, 3, %d);\n\n' % (msgsize+5, msgsize+4))
+            self._write(2*self.indent + 'message[%d] = CRC8(message, 3, %d);\n\n' % 
+                    (msgsize+5, msgsize+4))
             self._write(2*self.indent + 'return message;\n')
             self._write(self.indent + '}\n\n')
 
@@ -420,7 +447,7 @@ class JavaEmitter(CodeEmitter):
 
         self.output.write(s)
 
-# main =================================================================================================
+# main ===============================================================================================
 
 if __name__ == "__main__":
 
@@ -476,4 +503,4 @@ if __name__ == "__main__":
     CPPEmitter(msgdict)
 
     # Emite Java
-    JavaEmitter(msgdict)
+    #JavaEmitter(msgdict)
