@@ -24,11 +24,11 @@ using namespace std;
 
 #include "msppg/msppg.h"
 
-class My_Attitude_Handler : public Attitude_Handler {
+class My_ATTITUDE_Handler : public ATTITUDE_Handler {
 
     public:
 
-        void handle_Attitude(short angx, short angy, short heading) {
+        void handle_ATTITUDE(short angx, short angy, short heading) {
 
             printf("%+3d %+3d %+3d\n", angx, angy, heading);
         }
@@ -39,11 +39,11 @@ int main(int argc, char ** argv) {
 
     MSP_Parser parser;
 
-    MSP_Message message = parser.serialize_Attitude(59, 76, 1);
+    MSP_Message message = parser.serialize_ATTITUDE(59, 76, 1);
 
-    My_Attitude_Handler handler;
+    My_ATTITUDE_Handler handler;
 
-    parser.set_Attitude_Handler(&handler);
+    parser.set_ATTITUDE_Handler(&handler);
 
     for (byte b=message.start(); message.hasNext(); b=message.getNext()) {
 
