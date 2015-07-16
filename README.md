@@ -25,6 +25,7 @@ to test the code.  In output/python you can also run the imutest.py program, whi
 
 to build the msppg.jar file, which can then be used as a library for Android projects and other Java-based work.
 
-The example.json file currently contains only one message specification (Attitude), but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
+The Arduino example allows you to control the pitch of a buzzer using the pitch from the IMU.  To run that example, drag the output/arduino/MSPPG folder into your Arduino libaries folder, launch the Arduino IDE, and find the MSPPG submenu under the File/Examples menu.
 
+The example.json file currently contains only one message specification (Attitude), but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
 MSPPG currently supports types byte, short, and float, but we will likely add int as the need arises.
