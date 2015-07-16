@@ -418,7 +418,7 @@ class JavaEmitter(CodeEmitter):
             self._write('\n' + 2*self.indent + 'byte [] message = new byte[%d];\n' % (msgsize+6))
             self._write(2*self.indent + 'message[0] = 36;\n')
             self._write(2*self.indent + 'message[1] = 77;\n')
-            self._write(2*self.indent + 'message[2] = 62;\n')
+            self._write(2*self.indent + 'message[2] = %d;\n' % (62 if msgid < 200 else 60))
             self._write(2*self.indent + 'message[3] = %d;\n' % msgsize)
             self._write(2*self.indent + 'message[4] = (byte)%d;\n' %msgdict[msgtype][0]) 
             self._write(2*self.indent + 'byte [] data = bb.array();\n')
