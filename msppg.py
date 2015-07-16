@@ -428,21 +428,25 @@ class JavaEmitter(CodeEmitter):
 
         self.output.close()
 
+        # Write handler classes for each type of incoming message
         for msgtype in msgdict.keys():
 
             msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
 
-            argnames = self._getargnames(msgstuff)
-            argtypes = self._getargtypes(msgstuff)
+            if msgid < 200:
 
-            self.output = open('./output/java/edu/wlu/cs/msppg/%s_Handler.java' % msgtype, 'w')
-            self.output.write(self.warning('//'))
-            self.output.write('package edu.wlu.cs.msppg;\n\n')
-            self.output.write('public interface %s_Handler {\n\n' % msgtype)
-            self.output.write(self.indent + 'public void handle_%s' % msgtype)
-            self._write_params(self.output, argtypes, argnames)
-            self.output.write(';\n')
-            self.output.write('}\n')
+                argnames = self._getargnames(msgstuff)
+                argtypes = self._getargtypes(msgstuff)
+
+                self.output = open('./output/java/edu/wlu/cs/msppg/%s_Handler.java' % msgtype, 'w')
+                self.output.write(self.warning('//'))
+                self.output.write('package edu.wlu.cs.msppg;\n\n')
+                self.output.write('public interface %s_Handler {\n\n' % msgtype)
+                self.output.write(self.indent + 'public void handle_%s' % msgtype)
+                self._write_params(self.output, argtypes, argnames)
+                self.output.write(';\n')
+                self.output.write('}\n')
 
     def _write(self, s):
 
