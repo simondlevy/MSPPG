@@ -1,5 +1,6 @@
 /*
-Example for testing Arduino output of MSPPG
+Example for testing Arduino output of MSPPG.  Reports IMU values coming in
+on Serial1 and uses pitch to modify the pitch of a buzzer connetected on pin 8.
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -20,39 +21,50 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 MSP_Parser parser;
 
-MSP_Message message = parser.serialize_Attitude_Request();
-
-static void send_request() {
-
-
-}
+MSP_Message request = parser.serialize_Attitude_Request();
 
 class My_Attitude_Handler : public Attitude_Handler {
 
+
     public:
 
-        void handle_Attitude(short pitch, short roll, short yaw) {
+        void handle_Attitude(short angx, short angy, short heading) {
 
-            Serial.print(pitch);
-            Serial.print(" " );
-            Serial.print(roll);
-            Serial.print(" " );
-            Serial.println(yaw);
+            // Report the attitude
+            Serial.print("pitch: " );
+            Serial.print(angy/10.);
+            Serial.print(" | roll: " );
+            Serial.print(angx/10.);
+            Serial.print(" | yaw: " );
+            Serial.println(heading);
+
+            // Use pitch to set the pitch!
+            tone(8, map(angy, -1800, 1800, 100, 1000));
+
+            // Start the process over again
+            this->sendRequest();
         }
 
+        void sendRequest() {
+
+          for (byte b=request.start(); request.hasNext(); b=request.getNext()) {
+
+              Serial1.write(b);
+          }  
+        }
 };
+
+My_Attitude_Handler handler;
 
 void setup() {
 
-    Serial.begin(9600); 
+    Serial.begin(115200); 
 
     Serial1.begin(115200); 
 
-    My_Attitude_Handler handler;
-
     parser.set_Attitude_Handler(&handler);
 
-    send_request();
+    handler.sendRequest();
 }
 
 void loop() {
