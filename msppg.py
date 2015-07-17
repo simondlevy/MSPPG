@@ -108,7 +108,7 @@ class PythonEmitter(CodeEmitter):
         CodeEmitter.__init__(self, 'python', 'py')
         
         self._copyfile('attitude.py', 'output/python/attitude.py')
-        self._copyfile('imutest.py', 'output/python/imutest.py')
+        self._copyfile('imuexample.py', 'output/python/imuexample.py')
         self._copyfile('rc.py', 'output/python/rc.py')
 
         mkdir_if_missing('output/python/msppg')

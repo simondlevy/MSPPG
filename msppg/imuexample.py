@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-#FMUPORT = '/dev/ttyUSB0'
-FMUPORT = 'COM3'
+FMUPORT = '/dev/ttyUSB0'
+#FMUPORT = 'COM3'
 
 VEHICLE_SCALE = 0.10
 UPDATE_MSEC = 10
@@ -42,7 +42,9 @@ class Display(object):
         self.height = int(self.driver.canvas['height'])
 
         self.driver.root.bind("<Key>", self._check_quit)
-        
+
+        self.driver.root.title('IMU Telemetry')
+
         # Vehicle dimensions
         W = VEHICLE_SCALE
         D = VEHICLE_SCALE / 2
@@ -660,8 +662,8 @@ class MSPDriver(object):
 
         # MSPPG
         self.parser = msppg.Parser()
-        self.parser.attach_Attitude_Dispatcher(self._attitude_message_dispatcher)
-        self.request = self.parser.serialize_Attitude_Request()
+        self.parser.set_ATTITUDE_Handler(self._attitude_message_dispatcher)
+        self.request = self.parser.serialize_ATTITUDE_Request()
 
         self.yaw, self.pitch, self.roll = 0, 0, 0
         
@@ -702,8 +704,7 @@ if __name__ == "__main__":
 
     root = Tk()
 
-    root.geometry('%dx%d+%d+%d' % (width, height+200, 200, 200))
-    root.title('Setup')
+    root.geometry('%dx%d+%d+%d' % (width, height, 200, 200))
 
     canvas = Canvas(root, width=width, height=height, background='black')
 
@@ -714,5 +715,3 @@ if __name__ == "__main__":
     Display(driver, simulation=True).start()
 
     mainloop()
-Status API Training Shop Blog About Help
-© 2015 GitHub, Inc. Terms Privacy Security Contact
