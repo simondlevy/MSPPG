@@ -15,11 +15,12 @@ Once the package is installed, you can put your example.json file anywhere and r
 
 % msppg.py example.json
 
-which will create output/python, output/java/ and output/cpp. You can cd to any of those directories and do
+which will create output/python, output/java/, output/cpp, and output/arduino. You can cd to one of the
+first three output directories and do
 
 % make test
 
-to test the code.  In output/python you can also run the imutest.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
+to test the code.  In output/python you can also run the imuexample.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
 
 % make jar
 
