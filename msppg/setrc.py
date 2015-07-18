@@ -76,21 +76,18 @@ class Getter:
         parser.set_RC_Handler(self.get)
 
         self.autopilot = False
-        self.enable = True
         self.offtime = 0
         self.timestart = time.time()
 
     def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
 
         # Switch moved down
-        if c5 > 1000 and self.c5prev < 1000 and self.offtime > 2: #self.enable:
+        if c5 > 1000 and self.c5prev < 1000 and self.offtime > 2:
 
             self.autopilot = True
 
         # Switch moved back up
         if c5 < 1000 and self.c5prev > 1000:
-
-            self.enable = False
 
             self.autopilot = False
 
