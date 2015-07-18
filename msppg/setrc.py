@@ -18,8 +18,9 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-BAUD = 115200
-UPDATE_RATE_HZ = 500
+BAUD            = 115200
+UPDATE_RATE_HZ  = 500
+WAIT_TIME_SEC   = 1
 
 from msppg import Parser
 import serial
@@ -82,7 +83,7 @@ class Getter:
     def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
 
         # Switch moved down
-        if c5 > 1000 and self.c5prev < 1000 and self.offtime > 2:
+        if c5 > 1000 and self.c5prev < 1000 and self.offtime > WAIT_TIME_SEC:
 
             self.autopilot = True
 
@@ -100,7 +101,6 @@ class Getter:
         self.c5prev = c5
 
         port.write(self.request)
-
 
 getter = Getter()
 
