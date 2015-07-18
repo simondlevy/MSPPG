@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-rc.py Uses MSPPG to request and handle RC messages from flight controller
+getrc.py Uses MSPPG to request and handle RC messages from flight controller
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -46,4 +46,10 @@ port.write(request)
 
 while True:
 
-    parser.parse(port.read(1))
+    try:
+
+        parser.parse(port.read(1))
+
+    except KeyboardInterrupt:
+
+        break

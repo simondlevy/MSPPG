@@ -44,7 +44,7 @@ class CodeEmitter(object):
     def __init__(self, folder, ext):
 
         mkdir_if_missing('output/%s' % folder)
-        self._copyfile('%s.makefile' % folder, 'output/%s/Makefile' % folder)
+        self._copyfile('%s.makefile' % folder, '%s/Makefile' % folder)
 
         self.indent = '    '
 
@@ -52,7 +52,7 @@ class CodeEmitter(object):
 
     def _copyfile(self, src, dst):
 
-        outfile = open(dst, 'w')
+        outfile = open('output/' + dst, 'w')
         outfile.write(self._getsrc(src))
         outfile.close()
 
@@ -103,17 +103,24 @@ class CodeEmitter(object):
 
 class PythonEmitter(CodeEmitter):
 
+    def _copy_example(self, name):
+
+        fullname = name + '.py'
+
+        CodeEmitter._copyfile(self, fullname, 'python/' + fullname)
+
     def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copyfile('attitude.py', 'output/python/attitude.py')
-        self._copyfile('imuexample.py', 'output/python/imuexample.py')
-        self._copyfile('rc.py', 'output/python/rc.py')
+        self._copy_example('getimu')
+        self._copy_example('getrc')
+        self._copy_example('imudisplay')
+        self._copy_example('setrc')
 
         mkdir_if_missing('output/python/msppg')
 
-        self._copyfile('setup.py', 'output/python/setup.py')
+        self._copyfile('setup.py', 'python/setup.py')
 
         self.output = open('./output/python/msppg/__init__.py', 'w')
 
@@ -179,13 +186,13 @@ class CPPEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
-        self._copyfile('example.cpp', 'output/cpp/example.cpp')
+        self._copyfile('example.cpp', 'cpp/example.cpp')
 
         mkdir_if_missing('output/arduino')
         mkdir_if_missing('output/arduino/MSPPG')
         mkdir_if_missing('output/arduino/MSPPG/examples')
         mkdir_if_missing('output/arduino/MSPPG/examples/imuexample')
-        self._copyfile('imuexample.ino', 'output/arduino/MSPPG/examples/imuexample/imuexample.ino')
+        self._copyfile('imuexample.ino', 'arduino/MSPPG/examples/imuexample/imuexample.ino')
 
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
 
@@ -343,7 +350,7 @@ class JavaEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'java', 'java')
 
-        self._copyfile('example.java', 'output/java/example.java')
+        self._copyfile('example.java', 'java/example.java')
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')

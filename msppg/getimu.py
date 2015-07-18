@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-attitude.py Uses MSPPG to request and handle ATTITUDE messages from flight controller
+getimu.py Uses MSPPG to request and handle ATTITUDE messages from flight controller IMU
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -46,5 +46,11 @@ port.write(request)
 
 while True:
 
-    parser.parse(port.read(1))
+    try:
+
+        parser.parse(port.read(1))
+
+    except KeyboardInterrupt:
+
+        break
 

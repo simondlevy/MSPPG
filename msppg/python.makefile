@@ -23,7 +23,7 @@ install:
 	sudo python setup.py install
 
 test: 
-	python attitude.py $(PORT)
+	python getimu.py $(PORT)
   
 clean:
 	rm -f *.pyc

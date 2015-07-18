@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Graphical demo of MSPPG Attitude messages
+imudisplay.py - graphical demo of MSPPG Attitude messages
 
 Copyright (C) Alec Singer and Simon D. Levy 2015
 
