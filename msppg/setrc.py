@@ -19,8 +19,8 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
 BAUD            = 115200
-UPDATE_RATE_HZ  = 500
-WAIT_TIME_SEC   = 1
+UPDATE_RATE_HZ  = 400
+WAIT_TIME_SEC   = .5
 
 from msppg import Parser
 import serial
