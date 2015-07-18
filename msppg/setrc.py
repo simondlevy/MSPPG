@@ -19,7 +19,7 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
 BAUD = 115200
-UPDATE_RATE_HZ = 200
+UPDATE_RATE_HZ = 500
 
 from msppg import Parser
 import serial
@@ -36,45 +36,80 @@ if len(argv) < 2:
 parser = Parser()
 port = serial.Serial(argv[1], BAUD)
 
-setmsg = parser.serialize_SET_RAW_RC(1500, 1500, 1500, 1200, 0, 0, 0, 0)
-getmsg = parser.serialize_RC_Request()
+class SetterThread(threading.Thread):
 
-switchprev = -1
+    def __init__(self, getter):
 
-def setter(state):
+        threading.Thread.__init__(self, target=self.setter)
 
-    while(True):
+        self.message = parser.serialize_SET_RAW_RC(1500, 1500, 1500, 1200, 1500, 0, 0, 0)
 
-        print(state)
+        self.setDaemon(True)
 
-        if state[0]:
+        self.getter = getter
 
-            port.write(setmsg)
+    def setter(self):
 
-        time.sleep(1./UPDATE_RATE_HZ)
+        while(True):
+
+            if self.getter.autopilot: 
+
+                print('auto')
+                port.write(self.message)
+
+            else:
+
+                print('stable %3.3f' % self.getter.offtime)
+
+            time.sleep(1./UPDATE_RATE_HZ)
+
+class Getter:
+
+    def __init__(self):
+
+        self.c5prev = 0
+
+        self.request = parser.serialize_RC_Request()
+
+        port.write(self.request)
+
+        parser.set_RC_Handler(self.get)
+
+        self.autopilot = False
+        self.enable = True
+        self.offtime = 0
+        self.timestart = time.time()
+
+    def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
+
+        # Switch moved down
+        if c5 > 1000 and self.c5prev < 1000 and self.offtime > 2: #self.enable:
+
+            self.autopilot = True
+
+        # Switch moved back up
+        if c5 < 1000 and self.c5prev > 1000:
+
+            self.enable = False
+
+            self.autopilot = False
+
+            self.timestart = time.time()
+
+        if not self.autopilot:
+
+            self.offtime = time.time() - self.timestart
+
+        self.c5prev = c5
+
+        port.write(self.request)
 
 
-state = [0,0,0] # flag, current switch, previous switch
+getter = Getter()
 
-thread = threading.Thread(target=setter, args=(state,))
-thread.setDaemon(True)
-thread.start()
+setter = SetterThread(getter)
 
-def getter(c1, c2, c3, c4, c5, c6, c7, c8):
-
-    #print(c1, c2, c3, c4, c5)
-
-    if c5 > 1000:
-
-        state[0] = 1
-
-    sate[1] = c5
-
-    port.write(getmsg)
-
-parser.set_RC_Handler(getter)
-
-port.write(getmsg)
+setter.start()
 
 while True:
 
