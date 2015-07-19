@@ -54,13 +54,8 @@ class SetterThread(threading.Thread):
             if self.getter.autopilot: 
 
                 throttle = int(1200 + self.getter.throttle * 500)
-                #print(throttle)
                 message = parser.serialize_SET_RAW_RC(1500, 1500, 1500, throttle, 1500, 0, 0, 0)
                 port.write(message)
-
-            else:
-
-                None #print('stable')
 
             time.sleep(1./UPDATE_RATE_HZ)
 
@@ -82,6 +77,11 @@ class Getter:
 
     def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
 
+        if self.offtime == 0 and c5 > 1000:
+
+            print('Please turn off switch before starting')
+            exit(0)
+
         # Switch moved down
         if c5 > 1000 and self.c5prev < 1000 and self.offtime > WAIT_TIME_SEC:
 
@@ -99,14 +99,13 @@ class Getter:
 
         if self.autopilot:
 
+            # Increase / decrease throttle
             self.throttle += self.throttledir * .001
 
+            # Change throttle direction when limit reached
             if self.throttle <= 0:
-
                 self.throttledir = +1
-
             elif self.throttle >= 0.5:
-
                 self.throttledir = -1
 
         else: 
