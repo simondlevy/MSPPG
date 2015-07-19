@@ -18,9 +18,19 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
+# Standard for Baseflight
 BAUD            = 115200
+
+# Tune these for safety / performance
 UPDATE_RATE_HZ  = 200
 WAIT_TIME_SEC   = .1
+PWM_MIN         = 990
+PWM_MAX         = 2000
+
+# PWM values for outgoing message
+THROTTLE_OUT_BASELINE = 1200
+THROTTLE_OUT_MAXADD   = 500
+CHANNEL_NEUTRAL       = 1500
 
 from msppg import Parser
 import serial
@@ -37,6 +47,7 @@ if len(argv) < 2:
 parser = Parser()
 port = serial.Serial(argv[1], BAUD)
 
+# This thread sethe throttle based on incoming messages
 class SetterThread(threading.Thread):
 
     def __init__(self, getter):
@@ -53,8 +64,9 @@ class SetterThread(threading.Thread):
 
             if self.getter.autopilot: 
 
-                throttle = int(1200 + self.getter.throttle * 500)
-                message = parser.serialize_SET_RAW_RC(1500, 1500, 1500, throttle, 1500, 0, 0, 0)
+                throttle = int(THROTTLE_OUT_BASELINE + self.getter.throttle * THROTTLE_OUT_MAXADD)
+                message = parser.serialize_SET_RAW_RC(CHANNEL_NEUTRAL, CHANNEL_NEUTRAL, CHANNEL_NEUTRAL, 
+                        throttle, CHANNEL_NEUTRAL, 0, 0, 0)
                 port.write(message)
 
             time.sleep(1./UPDATE_RATE_HZ)
@@ -89,21 +101,21 @@ class Getter:
 
         # Check arming
 
-        if c3 > 2000 and c4 < 990:
+        if c3 > PWM_MAX and c4 < PWM_MIN:
             self.armed = True
 
-        if c3 < 990 and c4 < 990:
+        if c3 < PWM_MIN and c4 < PWM_MIN:
             self.armed = False
 
         # Switch moved down
-        if c5 > 1000 and self.c5prev < 1000 and self.offtime > WAIT_TIME_SEC and self.armed:
+        if c5 > PWM_MIN and self.c5prev < PWM_MIN and self.offtime > WAIT_TIME_SEC and self.armed:
 
             self.autopilot = True
             self.throttle = 0
             self.throttledir = +1
 
         # Switch moved back up
-        if c5 < 1000 and self.c5prev > 1000:
+        if c5 < PWM_MIN and self.c5prev > PWM_MIN:
 
             self.autopilot = False
 
@@ -117,7 +129,7 @@ class Getter:
             # Change throttle direction when limit reached
             if self.throttle <= 0:
                 self.throttledir = +1
-            elif self.throttle >= 0.5:
+            elif self.throttle >= 1:
                 self.throttledir = -1
 
         else: 
