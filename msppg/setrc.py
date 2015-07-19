@@ -19,8 +19,8 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
 BAUD            = 115200
-UPDATE_RATE_HZ  = 400
-WAIT_TIME_SEC   = .5
+UPDATE_RATE_HZ  = 200
+WAIT_TIME_SEC   = .1
 
 from msppg import Parser
 import serial
@@ -71,22 +71,34 @@ class Getter:
 
         parser.set_RC_Handler(self.get)
 
+        self.armed = False
         self.autopilot = False
         self.offtime = 0
         self.timestart = time.time()
 
+    def _error(self, msg):
+
+        print(msg)
+        exit(1)
+
     def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
 
+        # Disallow startup with switch down
         if self.offtime == 0 and c5 > 1000:
+            self._error('Please turn off switch before starting')
 
-            print('Please turn off switch before starting')
-            exit(0)
+        # Check arming
+
+        if c3 > 2000 and c4 < 990:
+            self.armed = True
+
+        if c3 < 990 and c4 < 990:
+            self.armed = False
 
         # Switch moved down
-        if c5 > 1000 and self.c5prev < 1000 and self.offtime > WAIT_TIME_SEC:
+        if c5 > 1000 and self.c5prev < 1000 and self.offtime > WAIT_TIME_SEC and self.armed:
 
             self.autopilot = True
-
             self.throttle = 0
             self.throttledir = +1
 
