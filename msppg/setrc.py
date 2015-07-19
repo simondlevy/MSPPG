@@ -43,8 +43,6 @@ class SetterThread(threading.Thread):
 
         threading.Thread.__init__(self, target=self.setter)
 
-        self.message = parser.serialize_SET_RAW_RC(1500, 1500, 1500, 1200, 1500, 0, 0, 0)
-
         self.setDaemon(True)
 
         self.getter = getter
@@ -55,12 +53,14 @@ class SetterThread(threading.Thread):
 
             if self.getter.autopilot: 
 
-                print('auto')
-                port.write(self.message)
+                throttle = int(1200 + self.getter.throttle * 500)
+                #print(throttle)
+                message = parser.serialize_SET_RAW_RC(1500, 1500, 1500, throttle, 1500, 0, 0, 0)
+                port.write(message)
 
             else:
 
-                print('stable %3.3f' % self.getter.offtime)
+                None #print('stable')
 
             time.sleep(1./UPDATE_RATE_HZ)
 
@@ -87,6 +87,9 @@ class Getter:
 
             self.autopilot = True
 
+            self.throttle = 0
+            self.throttledir = +1
+
         # Switch moved back up
         if c5 < 1000 and self.c5prev > 1000:
 
@@ -94,7 +97,19 @@ class Getter:
 
             self.timestart = time.time()
 
-        if not self.autopilot:
+        if self.autopilot:
+
+            self.throttle += self.throttledir * .001
+
+            if self.throttle <= 0:
+
+                self.throttledir = +1
+
+            elif self.throttle >= 0.5:
+
+                self.throttledir = -1
+
+        else: 
 
             self.offtime = time.time() - self.timestart
 
