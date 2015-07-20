@@ -113,10 +113,10 @@ class PythonEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copy_example('getimu')
-        self._copy_example('getrc')
-        self._copy_example('imudisplay')
-        self._copy_example('setrc')
+        self._copy_example('msp-getimu')
+        self._copy_example('msp-getrc')
+        self._copy_example('msp-imudisplay')
+        self._copy_example('msp-setrc')
 
         mkdir_if_missing('output/python/msppg')
 
@@ -128,7 +128,7 @@ class PythonEmitter(CodeEmitter):
 
         self.type2pack = {'byte' : 'B', 'short' : 'h', 'float' : 'f'}
 
-        self._write(self._getsrc('top-py') + '\n')
+        self._write(self._getsrc('msp-top-py') + '\n')
 
         for msgtype in msgdict.keys():
             msgstuff = msgdict[msgtype]
@@ -186,13 +186,13 @@ class CPPEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
-        self._copyfile('example.cpp', 'cpp/example.cpp')
+        self._copyfile('msp-example.cpp', 'cpp/msp-example.cpp')
 
         mkdir_if_missing('output/arduino')
         mkdir_if_missing('output/arduino/MSPPG')
         mkdir_if_missing('output/arduino/MSPPG/examples')
         mkdir_if_missing('output/arduino/MSPPG/examples/imuexample')
-        self._copyfile('imuexample.ino', 'arduino/MSPPG/examples/imuexample/imuexample.ino')
+        self._copyfile('msp-imuexample.ino', 'arduino/MSPPG/examples/imuexample/msp-imuexample.ino')
 
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
 
@@ -204,9 +204,9 @@ class CPPEmitter(CodeEmitter):
 
         self._cwrite(self.warning('//'))
 
-        self._hwrite(self._getsrc('top-h'))
+        self._hwrite(self._getsrc('msp-top-h'))
  
-        self._cwrite('\n' + self._getsrc('top-cpp'))
+        self._cwrite('\n' + self._getsrc('msp-top-cpp'))
 
         for msgtype in msgdict.keys():
 
@@ -350,7 +350,7 @@ class JavaEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'java', 'java')
 
-        self._copyfile('example.java', 'java/example.java')
+        self._copyfile('msp-example.java', 'java/msp-example.java')
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')
@@ -360,11 +360,11 @@ class JavaEmitter(CodeEmitter):
         self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
         self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float'}
 
-        self.output = open('./output/java/edu/wlu/cs/msppg/Parser.java', 'w')
+        self.output = open('./output/java/edu/wlu/cs/msppg/MSP_Parser.java', 'w')
 
         self._write(self.warning('//'))
 
-        self._write(self._getsrc('top-java'))
+        self._write(self._getsrc('msp-top-java'))
 
         # Write handler cases for incoming messages
         for msgtype in msgdict.keys():
@@ -487,7 +487,7 @@ if __name__ == "__main__":
 
 
     # default to example as input file    
-    infilename = 'example.json'
+    infilename = 'msp-example.json'
 
     # use input file from command line if specified
     if len(argv) > 1:
