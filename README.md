@@ -31,7 +31,7 @@ The Arduino example allows you to control the pitch of a buzzer using the pitch 
 (1) Naze - to Arduino ground.
 (2) Naze + to Arduino 5v.
 (3) Naze TX to Arduino RX1.
-(4) Naxe RX to Arduino TX1.
+(4) Naze RX to Arduino TX1.
 (5) Buzzer + to Arduino digitial 8.
 (6) Buzzer - to Arduino ground.
 
