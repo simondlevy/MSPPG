@@ -16,12 +16,6 @@ class Parser(object):
     def __init__(self):
 
         self.state =                      0
-        self.message_direction =          1
-        self.message_id =                 0
-        self.message_length_expected =    0
-        self.message_length_received =    0
-        self.message_buffer =             None
-        self.message_checksum =           0
 
     def parse(self, char):
 
@@ -53,6 +47,7 @@ class Parser(object):
 
         elif self.state ==  4:
             self.message_id = byte
+            self.message_length_received  = 0
             self.message_checksum ^= byte
             if self.message_length_expected > 0:
                 # process payload

@@ -27,9 +27,10 @@ WAIT_TIME_SEC   = .1
 PWM_MIN         = 990
 PWM_MAX         = 2000
 
-# PWM values for outgoing message
+# Values for outgoing message
 THROTTLE_OUT_BASELINE = 1200
 THROTTLE_OUT_MAXADD   = 500
+THROTTLE_INC          = .001
 CHANNEL_NEUTRAL       = 1500
 
 from msppg import Parser
@@ -124,7 +125,7 @@ class Getter:
         if self.autopilot:
 
             # Increase / decrease throttle
-            self.throttle += self.throttledir * .001
+            self.throttle += self.throttledir * THROTTLE_INC
 
             # Change throttle direction when limit reached
             if self.throttle <= 0:
