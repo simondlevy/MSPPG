@@ -22,6 +22,7 @@ BAUD = 57600
 
 from msppg import MAVLink_Parser as Parser
 import serial
+from math import degrees
 
 from sys import argv
 
@@ -34,9 +35,13 @@ if len(argv) < 2:
 parser = Parser()
 port = serial.Serial(argv[1], BAUD)
 
+def rad2deg(rad):
+
+    return '%+3.3f' % degrees(rad)
+
 def handler(time_boot_ms, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed):
 
-    print(roll, pitch, yaw)
+    print('Roll=%s  Pitch=%s  Yaw=%s' % (rad2deg(roll), rad2deg(pitch), rad2deg(yaw)))
 
 parser.set_ATTITUDE_Handler(handler)
 
