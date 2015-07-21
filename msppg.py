@@ -110,7 +110,7 @@ class PythonEmitter(CodeEmitter):
 
         CodeEmitter._copyfile(self, fullname, 'python/' + fullname)
 
-    def __init__(self, msgdict):
+    def __init__(self, msgdict, outformat):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
@@ -183,7 +183,7 @@ class PythonEmitter(CodeEmitter):
 
 class CPPEmitter(CodeEmitter):
 
-    def __init__(self, msgdict):
+    def __init__(self, msgdict, outformat):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
@@ -347,7 +347,7 @@ class CPPEmitter(CodeEmitter):
 
 class JavaEmitter(CodeEmitter):
 
-    def __init__(self, msgdict):
+    def __init__(self, msgdict, outformat):
 
         CodeEmitter.__init__(self, 'java', 'java')
 
@@ -488,13 +488,18 @@ if __name__ == '__main__':
 
     # default to input from simple MSP example
     infile = 'msp-example.json'
+    outformat = 'msp'
 
     # parse command-line options
     optparser = OptionParser()
-    optparser.add_option('-i', '--infile', dest='infilename', default=infile, help='input file', metavar='INFILE')
+    optparser.add_option('-i', '--infile', dest='infilename', default=infile, 
+            help='input file', metavar='INFILE')
+    optparser.add_option('-o', '--outformat', dest='outformat', default=outformat, 
+            help='output format', metavar='OUTFORMAT')
     (options, args) = optparser.parse_args()
 
     infilename = options.infilename
+    outformat = options.outformat
 
     data = json.load(open(infilename))
  
@@ -534,10 +539,10 @@ if __name__ == '__main__':
     mkdir_if_missing('output')
 
     # Emit Python
-    PythonEmitter(msgdict)
+    PythonEmitter(msgdict, outformat)
 
     # Emit C++
-    CPPEmitter(msgdict)
+    CPPEmitter(msgdict, outformat)
 
     # Emite Java
-    JavaEmitter(msgdict)
+    JavaEmitter(msgdict, outformat)
