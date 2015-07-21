@@ -29,7 +29,7 @@ import threading
 import serial
 import time
 import msppg
-from math import sin, cos, radians, degrees
+from math import sin, cos
 import numpy as np
 
 class Display(object):
@@ -67,8 +67,6 @@ class Display(object):
 
     def start(self, delay_msec=UPDATE_MSEC):
 
-        self.calibrate_button = None
-
         self._schedule_display_task(delay_msec)
 
         self.running = True
@@ -81,47 +79,14 @@ class Display(object):
 
     def stop(self):
 
-        self.delete(self.calibrate_button_window)
-        self.delete(self.pitchroll_kp_scale_window)
-        self.delete(self.yaw_kp_scale_window)
-        self.delete(self.save_button_window)
-
-        self.calibrate_button = None
-
         self._clear()
         self.running = False
 
-    def showCalibrated(self):
-
-        self._set_button('Calibrate level', 'normal')
-
-    def setParams(self, pitchroll_kp_percent, yaw_kp_percent):
-
-        self.pitchroll_kp_percent = pitchroll_kp_percent
-        self.yaw_kp_percent = yaw_kp_percent
-
-        self._set_sliders()
 
     def _schedule_display_task(self, delay_msec):
 
         self.driver.root.after(delay_msec, self._task)
         
-    def _set_sliders(self):
-
-        self.pitchroll_kp_scale.set(self.pitchroll_kp_percent)
-        self.yaw_kp_scale.set(self.yaw_kp_percent)
-
-    def _calibrate(self):
-
-        self._set_button('Calibrating ...', 'disabled')
-
-    def _set_button(self, text, state):
-
-        self.calibrate_button['text'] = text
-        self.calibrate_button['state'] = state
-
-        self.driver.setBoardLevel()
-
     def _clear(self):
 
         for face in self.faces:
@@ -157,36 +122,9 @@ class Display(object):
 
         return np.array([x, y, z])
 
-    def _save(self):
-
-        self.driver.save(self.pitchroll_kp_scale.get(), self.yaw_kp_scale.get())
-
     def _create_window(self, x, widget):
 
         return self.driver.canvas.create_window(x, 10, anchor=NW, window=widget)
-
-    def _create_button(self, text, x, command):
-
-        button = Button(self.driver.canvas, text=text, height=2, command=command);
-        button_window = self._create_window(x, button)
-
-        return button, button_window
-
-    def _create_scale(self, text, x, callback):
-        
-        scale = Scale(self.driver.canvas, from_=0, to_=100, label=text, command=callback,
-                orient=HORIZONTAL, length=200, bg='black', fg='white')
-        scale_window = self._create_window(x, scale) 
-
-        return scale, scale_window
-
-    def _pitchroll_kp_scale_callback(self, valstr):
-
-        self.pitchroll_kp_percent = int(valstr)
-
-    def _yaw_kp_scale_callback(self, valstr):
-
-        self.yaw_kp_percent = int(valstr)
 
     def _check_quit(self, event):
 
@@ -195,39 +133,24 @@ class Display(object):
 
     def _update(self):
 
-        # First time around, add widgets
-        if not self.simulation and (self.calibrate_button is None):
-
-            self.calibrate_button, self.calibrate_button_window = self._create_button('Calibrate level', 30,
-                    self._calibrate)
-
-            self.pitchroll_kp_scale, self.pitchroll_kp_scale_window  = self._create_scale('Pitch/Roll Kp', 180,
-                    self._pitchroll_kp_scale_callback)
-            self.yaw_kp_scale, self.yaw_kp_scale_window  = self._create_scale('Yaw Kp', 430,
-                    self._yaw_kp_scale_callback)
-
-            self.save_button, self.save_button_window = self._create_button('  Save  ', 670, self._save)
-
-            self._set_sliders()
-
         # Erase previous image
         self._clear()
 
         # Convert angles to X,Y,Z rotation matrices
 
-        yawAngle   = radians(self.yaw_pitch_roll[0])
+        yawAngle   = self.yaw_pitch_roll[0]
         self.yawrot[0,0] = +cos(yawAngle)
         self.yawrot[0,2] = +sin(yawAngle)
         self.yawrot[2,0] = -sin(yawAngle)
         self.yawrot[2,2] = +cos(yawAngle)
 
-        pitchAngle = radians(self.yaw_pitch_roll[1]) 
+        pitchAngle = self.yaw_pitch_roll[1]
         self.pitchrot[1,1] = +cos(pitchAngle) 
         self.pitchrot[1,2] = -sin(pitchAngle)
         self.pitchrot[2,1] = +sin(pitchAngle)
         self.pitchrot[2,2] = +cos(pitchAngle)
 
-        rollAngle  = -radians(self.yaw_pitch_roll[2]) # negate so positive is roll rightward
+        rollAngle  = -self.yaw_pitch_roll[2] # negate so positive is roll rightward
         self.rollrot[0,0] = +cos(rollAngle)
         self.rollrot[0,1] = -sin(rollAngle)
         self.rollrot[1,0] = +sin(rollAngle)
@@ -258,8 +181,8 @@ class Display(object):
 
         # Update angle changes
         if not self.yaw_pitch_roll_prev is None:
-            self.yaw_pitch_roll_change = [degrees(abs(pair[0]-pair[1])) 
-                    for pair in zip(self.yaw_pitch_roll,self.yaw_pitch_roll_prev)]
+            self.yaw_pitch_roll_change = [abs(pair[0]-pair[1]) 
+                for pair in zip(self.yaw_pitch_roll,self.yaw_pitch_roll_prev)]
         self.yaw_pitch_roll_prev = self.yaw_pitch_roll
 
     def _is_polygon_front_face(self, pts):
@@ -678,13 +601,14 @@ class MSPDriver(object):
                     
     def _attitude_message_dispatcher(self, time_boot_ms, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed):
 
-        print(roll, pitch, yaw)
+        self.roll = roll
+        self.pitch = pitch
+        self.yaw = yaw
 
     def getYawPitchRoll(self):
 
-        return 0, 0, 0
+        return self.yaw, self.pitch, self.roll
         
-
 if __name__ == "__main__":
 
     width = 800

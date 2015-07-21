@@ -67,8 +67,6 @@ class Display(object):
 
     def start(self, delay_msec=UPDATE_MSEC):
 
-        self.calibrate_button = None
-
         self._schedule_display_task(delay_msec)
 
         self.running = True
@@ -81,19 +79,8 @@ class Display(object):
 
     def stop(self):
 
-        self.delete(self.calibrate_button_window)
-        self.delete(self.pitchroll_kp_scale_window)
-        self.delete(self.yaw_kp_scale_window)
-        self.delete(self.save_button_window)
-
-        self.calibrate_button = None
-
         self._clear()
         self.running = False
-
-    def showCalibrated(self):
-
-        self._set_button('Calibrate level', 'normal')
 
     def setParams(self, pitchroll_kp_percent, yaw_kp_percent):
 
@@ -106,22 +93,6 @@ class Display(object):
 
         self.driver.root.after(delay_msec, self._task)
         
-    def _set_sliders(self):
-
-        self.pitchroll_kp_scale.set(self.pitchroll_kp_percent)
-        self.yaw_kp_scale.set(self.yaw_kp_percent)
-
-    def _calibrate(self):
-
-        self._set_button('Calibrating ...', 'disabled')
-
-    def _set_button(self, text, state):
-
-        self.calibrate_button['text'] = text
-        self.calibrate_button['state'] = state
-
-        self.driver.setBoardLevel()
-
     def _clear(self):
 
         for face in self.faces:
@@ -157,36 +128,9 @@ class Display(object):
 
         return np.array([x, y, z])
 
-    def _save(self):
-
-        self.driver.save(self.pitchroll_kp_scale.get(), self.yaw_kp_scale.get())
-
     def _create_window(self, x, widget):
 
         return self.driver.canvas.create_window(x, 10, anchor=NW, window=widget)
-
-    def _create_button(self, text, x, command):
-
-        button = Button(self.driver.canvas, text=text, height=2, command=command);
-        button_window = self._create_window(x, button)
-
-        return button, button_window
-
-    def _create_scale(self, text, x, callback):
-        
-        scale = Scale(self.driver.canvas, from_=0, to_=100, label=text, command=callback,
-                orient=HORIZONTAL, length=200, bg='black', fg='white')
-        scale_window = self._create_window(x, scale) 
-
-        return scale, scale_window
-
-    def _pitchroll_kp_scale_callback(self, valstr):
-
-        self.pitchroll_kp_percent = int(valstr)
-
-    def _yaw_kp_scale_callback(self, valstr):
-
-        self.yaw_kp_percent = int(valstr)
 
     def _check_quit(self, event):
 
@@ -194,21 +138,6 @@ class Display(object):
             exit(0)        
 
     def _update(self):
-
-        # First time around, add widgets
-        if not self.simulation and (self.calibrate_button is None):
-
-            self.calibrate_button, self.calibrate_button_window = self._create_button('Calibrate level', 30,
-                    self._calibrate)
-
-            self.pitchroll_kp_scale, self.pitchroll_kp_scale_window  = self._create_scale('Pitch/Roll Kp', 180,
-                    self._pitchroll_kp_scale_callback)
-            self.yaw_kp_scale, self.yaw_kp_scale_window  = self._create_scale('Yaw Kp', 430,
-                    self._yaw_kp_scale_callback)
-
-            self.save_button, self.save_button_window = self._create_button('  Save  ', 670, self._save)
-
-            self._set_sliders()
 
         # Erase previous image
         self._clear()
