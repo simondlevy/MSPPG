@@ -52,7 +52,7 @@ MAVLink Instructions
 
 In your favorite Python environment, run the command:
 
-   msppg.py -i msp-example.json -p msp
+   msppg.py -i mavlink-example.json -p mavlink
 
 Then connect your MAVLink FC (I used Pixhawk with Mission Planner firmware), make sure you have numpy installed, go to the output/python directory and do
 
