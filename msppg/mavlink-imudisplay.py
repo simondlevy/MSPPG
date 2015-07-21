@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-FMUPORT = '/dev/ttyUSB0'
+FMUPORT = '/dev/ttyACM0'
 #FMUPORT = 'COM3'
 
 VEHICLE_SCALE = 0.10
