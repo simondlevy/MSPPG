@@ -13,14 +13,14 @@ in Unix (Linux, OS X).
 
 Once the package is installed, you can put your example.json file anywhere and run the following:
 
-% msppg.py example.json
+% msppg.py msp-example.json
 
 which will create output/python, output/java/, output/cpp, and output/arduino. You can cd to one of the
 first three output directories and do
 
 % make test
 
-to test the code.  In output/python you can also run the imudisplay.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
+to test the code.  In output/python you can also run the msp-imudisplay.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
 
 % make jar
 
@@ -37,5 +37,5 @@ The Arduino example allows you to control the pitch of a buzzer using the pitch 
 
 Then copy the output/arduino/MSPPG folder into your Arduino libaries folder, launch the Arduino IDE, and find the MSPPG submenu under the File/Examples menu.
 
-The example.json file currently contains just a few message specifications, but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
+The msp-example.json file currently contains just a few message specifications, but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
 MSPPG currently supports types byte, short, and float, but we will likely add int as the need arises.

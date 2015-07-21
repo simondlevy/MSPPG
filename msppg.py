@@ -25,6 +25,7 @@ from subprocess import call
 import os
 import json
 from pkg_resources import resource_string
+from optparse import OptionParser
 
 def clean(string):
     cleaned_string = string[1: len(string) - 1]
@@ -483,15 +484,17 @@ class JavaEmitter(CodeEmitter):
 
 # main ===============================================================================================
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
+    # default to input from simple MSP example
+    infile = 'msp-example.json'
 
-    # default to example as input file    
-    infilename = 'msp-example.json'
+    # parse command-line options
+    optparser = OptionParser()
+    optparser.add_option('-i', '--infile', dest='infilename', default=infile, help='input file', metavar='INFILE')
+    (options, args) = optparser.parse_args()
 
-    # use input file from command line if specified
-    if len(argv) > 1:
-        infilename = argv[1]
+    infilename = options.infilename
 
     data = json.load(open(infilename))
  
