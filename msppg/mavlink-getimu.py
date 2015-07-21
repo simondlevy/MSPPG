@@ -20,7 +20,7 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 BAUD = 57600
 
-from msppg import Parser
+from msppg import MAVLink_Parser as Parser
 import serial
 
 from sys import argv
@@ -28,21 +28,17 @@ from sys import argv
 if len(argv) < 2:
 
     print('Usage: python %s PORT' % argv[0])
-    print('Example: python %s /dev/ttyUSB0' % argv[0])
+    print('Example: python %s /dev/ttyACM0' % argv[0])
     exit(1)
 
 parser = Parser()
-request = parser.serialize_ATTITUDE_Request()
 port = serial.Serial(argv[1], BAUD)
 
-def handler(pitch, roll, yaw):
+def handler(time_boot_ms, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed):
 
-    print(pitch, roll, yaw)
-    port.write(request)
+    print(roll, pitch, yaw)
 
 parser.set_ATTITUDE_Handler(handler)
-
-port.write(request)
 
 while True:
 

@@ -1,7 +1,7 @@
 import struct
 
 # See https://github.com/mavlink/c_library/blob/master/pixhawk/pixhawk.h
-MAVLINK_MESSAGE_CRCS = (50, 124, 137, 0, 237, 217, 104, 119, 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 0, 
+_MAVLINK_MESSAGE_CRCS = (50, 124, 137, 0, 237, 217, 104, 119, 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 0, 
                         214, 159, 220, 168, 24, 23, 170, 144, 67, 115, 39, 246, 185, 104, 237, 244, 
                         222, 212, 9, 254, 230, 28, 28, 132, 221, 232, 11, 153, 41, 39, 214, 223, 141, 
                         33, 15, 3, 100, 24, 239, 238, 30, 200, 183, 0, 130, 0, 148, 21, 0, 52, 124, 
@@ -70,6 +70,6 @@ class MAVLink_Parser(object):
             
         elif self.state == 8:
             self.state = 0
-            self._update_checksum(MAVLINK_MESSAGE_CRCS[self.message_id])
+            self._update_checksum(_MAVLINK_MESSAGE_CRCS[self.message_id])
             self.chksum_actual |=  (byte << 8)
             if self.message_checksum ==  self.chksum_actual:

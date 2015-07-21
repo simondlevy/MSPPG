@@ -20,7 +20,7 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 BAUD = 115200
 
-from msppg import MSP_Parser
+from msppg import MSP_Parser as Parser
 import serial
 
 from sys import argv
@@ -31,7 +31,7 @@ if len(argv) < 2:
     print('Example: python %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
-parser = MSP_Parser()
+parser = Parser()
 request = parser.serialize_ATTITUDE_Request()
 port = serial.Serial(argv[1], BAUD)
 
