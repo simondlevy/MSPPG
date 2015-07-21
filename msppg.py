@@ -49,7 +49,7 @@ class CodeEmitter(object):
 
         self.indent = '    '
 
-        self.type2size = {'byte': 1, 'short' : 2, 'float' : 4}
+        self.type2size = {'byte': 1, 'short' : 2, 'float' : 4, 'int' : 4}
 
     def _copyfile(self, src, dst):
 
@@ -125,7 +125,7 @@ class PythonEmitter(CodeEmitter):
 
         self._write(self.warning('#'))
 
-        self.type2pack = {'byte' : 'B', 'short' : 'h', 'float' : 'f'}
+        self.type2pack = {'byte' : 'B', 'short' : 'h', 'float' : 'f', 'int' : 'i'}
 
         self._write(self._getsrc('%s-top-py' % outformat) + '\n')
 
@@ -193,7 +193,7 @@ class CPPEmitter(CodeEmitter):
         mkdir_if_missing('output/arduino/MSPPG/examples/imuexample')
         self._copyfile('msp-imuexample.ino', 'arduino/MSPPG/examples/imuexample/msp-imuexample.ino')
 
-        self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
+        self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float', 'int' : 'int'}
 
         self.coutput = open('./output/cpp/msppg/msppg.cpp', 'w')
         self.houtput = open('./output/cpp/msppg/msppg.h', 'w')
@@ -356,8 +356,8 @@ class JavaEmitter(CodeEmitter):
         mkdir_if_missing('output/java/edu/wlu/cs')
         mkdir_if_missing('output/java/edu/wlu/cs/msppg')
 
-        self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float'}
-        self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float'}
+        self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float', 'int' : 'int'}
+        self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float', 'int' : 'Int'}
 
         self.output = open('./output/java/edu/wlu/cs/msppg/MSP_Parser.java', 'w')
 

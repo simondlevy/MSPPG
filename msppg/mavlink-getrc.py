@@ -18,12 +18,15 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-BAUD = 115200
+BAUD = 57600
 
 from msppg import Parser
 import serial
 
 from sys import argv
+
+print('Sorry; not working yet!')
+exit(1)
 
 if len(argv) < 2:
 
@@ -31,7 +34,7 @@ if len(argv) < 2:
     print('Example: python %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
-parser = MSP_Parser()
+parser = MAVLink_Parser()
 request = parser.serialize_RC_Request()
 port = serial.Serial(argv[1], BAUD)
 

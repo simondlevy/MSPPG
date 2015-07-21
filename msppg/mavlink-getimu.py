@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-mavlink-getimu.py Uses MSPPG to request and handle ATTITUDE messages from flight controller IMU
+getimu.py Uses MSPPG to request and handle ATTITUDE messages from flight controller IMU
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 

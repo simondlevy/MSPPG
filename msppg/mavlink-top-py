@@ -14,7 +14,7 @@ MAVLINK_MESSAGE_CRCS = (50, 124, 137, 0, 237, 217, 104, 119, 0, 0, 0, 89, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204, 49, 170, 44, 83, 46, 0)
 
-class MAVLinkParser(object):
+class MAVLink_Parser(object):
 
     def __init__(self):
         

@@ -1,5 +1,5 @@
             else:
-                print('code: ' + str(self.code) + ' - crc failed')
+                print('code: ' + str(self.message_id) + ' - crc failed')
 
                 self.packet_error += 1
             # Reset variables

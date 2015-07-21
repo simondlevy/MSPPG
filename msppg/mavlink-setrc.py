@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 '''
 
-# Standard for Baseflight
-BAUD            = 115200
+# Standard for Pixhawk
+BAUD            = 57600
 
 # Tune these for safety / performance
 UPDATE_RATE_HZ  = 200
@@ -33,7 +33,7 @@ THROTTLE_OUT_MAXADD   = 500
 THROTTLE_INC          = .001
 CHANNEL_NEUTRAL       = 1500
 
-from msppg import MSP_Parser as Parser
+from msppg import MAVLink_Parser as Parser
 import serial
 import time
 from sys import argv
@@ -44,6 +44,9 @@ if len(argv) < 2:
     print('Usage: python %s PORT' % argv[0])
     print('Example: python %s /dev/ttyUSB0' % argv[0])
     exit(1)
+
+print('Sorry; not working yet!')
+exit(1)
 
 parser = Parser()
 port = serial.Serial(argv[1], BAUD)
