@@ -661,22 +661,14 @@ class MSPDriver(object):
         self.fmuport = serial.Serial(FMUPORT, 57600)
 
         # MSPPG
-        self.parser = msppg.MSP_Parser()
+        self.parser = msppg.MAVLink_Parser()
         self.parser.set_ATTITUDE_Handler(self._attitude_message_dispatcher)
-        self.request = self.parser.serialize_ATTITUDE_Request()
 
         self.yaw, self.pitch, self.roll = 0, 0, 0
         
         thread = threading.Thread(target = self._read_fmu)
         thread.daemon = True
         thread.start()
-
-        self._send_request()
-
-    def _send_request(self):
-
-        self.fmuport.write(self.request)
-        
 
     def _read_fmu(self):
 
@@ -687,8 +679,6 @@ class MSPDriver(object):
     def _attitude_message_dispatcher(self, time_boot_ms, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed):
 
         print(roll, pitch, yaw)
-
-        #self._send_request()
 
     def getYawPitchRoll(self):
 
