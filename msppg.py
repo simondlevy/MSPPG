@@ -147,21 +147,23 @@ class PythonEmitter(CodeEmitter):
             msgstuff = msgdict[msgtype]
             msgid = msgstuff[0]
 
-            self._write(self.indent + 'def serialize_' + msgtype + '(self')
-            for argname in self._getargnames(msgstuff):
-                self._write(', ' + argname)
-            self._write('):\n\n')
-            self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
-            for argtypes in self._getargtypes(msgstuff):
-                self._write(self.type2pack[argtype])
-            self._write('\'')
-            for argname in self._getargnames(msgstuff):
-                self._write(', ' + argname)
-            self._write(')\n\n')
-            self._write(self.indent*2 + 
-                    ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
-            self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
-                    ('>' if msgid < 200 else '<'))
+            if protocol == 'msp':
+
+                self._write(self.indent + 'def serialize_' + msgtype + '(self')
+                for argname in self._getargnames(msgstuff):
+                    self._write(', ' + argname)
+                self._write('):\n\n')
+                self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
+                for argtypes in self._getargtypes(msgstuff):
+                    self._write(self.type2pack[argtype])
+                self._write('\'')
+                for argname in self._getargnames(msgstuff):
+                    self._write(', ' + argname)
+                self._write(')\n\n')
+                self._write(self.indent*2 + 
+                        ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
+                self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
+                        ('>' if msgid < 200 else '<'))
 
             if protocol == 'mavlink' or msgid < 200:
 
