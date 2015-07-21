@@ -661,7 +661,7 @@ class MSPDriver(object):
         self.fmuport = serial.Serial(FMUPORT, 115200)
 
         # MSPPG
-        self.parser = msppg.Parser()
+        self.parser = msppg.MSP_Parser()
         self.parser.set_ATTITUDE_Handler(self._attitude_message_dispatcher)
         self.request = self.parser.serialize_ATTITUDE_Request()
 

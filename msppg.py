@@ -104,20 +104,18 @@ class CodeEmitter(object):
 
 class PythonEmitter(CodeEmitter):
 
-    def _copy_example(self, name):
+    def _copy_example(self, name, outformat):
 
-        fullname = name + '.py'
-
-        CodeEmitter._copyfile(self, fullname, 'python/' + fullname)
+        CodeEmitter._copyfile(self, '%s-%s.py' % (outformat, name), 'python/' + ('%s.py' % name))
 
     def __init__(self, msgdict, outformat):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copy_example('%s-getimu' % outformat)
-        self._copy_example('%s-getrc' % outformat)
-        self._copy_example('%s-imudisplay' % outformat)
-        self._copy_example('%s-setrc' % outformat)
+        self._copy_example('getimu', outformat)
+        self._copy_example('getrc', outformat)
+        self._copy_example('imudisplay', outformat)
+        self._copy_example('setrc', outformat)
 
         mkdir_if_missing('output/python/msppg')
 
