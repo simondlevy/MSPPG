@@ -114,10 +114,10 @@ class PythonEmitter(CodeEmitter):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copy_example('msp-getimu')
-        self._copy_example('msp-getrc')
-        self._copy_example('msp-imudisplay')
-        self._copy_example('msp-setrc')
+        self._copy_example('%s-getimu' % outformat)
+        self._copy_example('%s-getrc' % outformat)
+        self._copy_example('%s-imudisplay' % outformat)
+        self._copy_example('%s-setrc' % outformat)
 
         mkdir_if_missing('output/python/msppg')
 
@@ -129,7 +129,7 @@ class PythonEmitter(CodeEmitter):
 
         self.type2pack = {'byte' : 'B', 'short' : 'h', 'float' : 'f'}
 
-        self._write(self._getsrc('msp-top-py') + '\n')
+        self._write(self._getsrc('%s-top-py' % outformat) + '\n')
 
         for msgtype in msgdict.keys():
             msgstuff = msgdict[msgtype]
