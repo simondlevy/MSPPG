@@ -147,21 +147,32 @@ class PythonEmitter(CodeEmitter):
             msgstuff = msgdict[msgtype]
             msgid = msgstuff[0]
 
-            if protocol == 'msp':
+            self._write(self.indent + 'def serialize_' + msgtype + '(self')
+            for argname in self._getargnames(msgstuff):
+                self._write(', ' + argname)
+            if protocol == 'mavlink':
+                self._write(',\n' + 3*self.indent + 'packet_sequence=0, system_id=0, component_id=0')
+            self._write('):\n\n')
+            self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
+            for argtype in self._getargtypes(msgstuff):
+                self._write(self.type2pack[argtype])
+            self._write('\'')
+            for argname in self._getargnames(msgstuff):
+                self._write(', ' + argname)
+            self._write(')\n\n')
+            self._write(self.indent*2)
 
-                self._write(self.indent + 'def serialize_' + msgtype + '(self')
-                for argname in self._getargnames(msgstuff):
-                    self._write(', ' + argname)
-                self._write('):\n\n')
-                self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
-                for argtypes in self._getargtypes(msgstuff):
-                    self._write(self.type2pack[argtype])
-                self._write('\'')
-                for argname in self._getargnames(msgstuff):
-                    self._write(', ' + argname)
-                self._write(')\n\n')
-                self._write(self.indent*2 + 
-                        ('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid))
+            if protocol == 'mavlink':
+
+                self._write('self.message_id = %d\n' % msgid)
+                self._write(2*self.indent + 'msg = chr(len(message_buffer))')
+                self._write('+ chr(packet_sequence) + chr(system_id) + chr(component_id) + ')
+                self._write('chr(self.message_id) + message_buffer\n\n')
+
+                self._write(2*self.indent + 'return self._add_crc16(msg)\n\n')
+
+            if protocol == 'msp':
+                self._write('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid)
                 self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
                         ('>' if msgid < 200 else '<'))
 

@@ -26,6 +26,22 @@ class MAVLink_Parser(object):
         tmp ^= (tmp << 4) & 0xFF
         self.message_checksum = (self.message_checksum>>8) ^ (tmp<<8) ^ (tmp<<3) ^ (tmp>>4) 
 
+    def _add_crc16(self, data):
+
+        self.message_checksum = 0xFFFF
+
+        for char in data:
+
+            self._update_checksum(ord(char))
+
+        self._finalize_message()
+
+        return chr(0xFE) + data + chr(self.message_checksum & 0xFF) + chr((self.message_checksum & 0xFF00) >> 8)
+
+    def _finalize_message(self):
+
+        self._update_checksum(_MAVLINK_MESSAGE_CRCS[self.message_id])
+
     def parse(self, char):
 
         byte = ord(char)
@@ -70,6 +86,6 @@ class MAVLink_Parser(object):
             
         elif self.state == 8:
             self.state = 0
-            self._update_checksum(_MAVLINK_MESSAGE_CRCS[self.message_id])
+            self._finalize_message()
             self.chksum_actual |=  (byte << 8)
             if self.message_checksum ==  self.chksum_actual:
