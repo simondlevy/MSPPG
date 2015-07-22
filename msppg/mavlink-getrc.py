@@ -20,13 +20,10 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 BAUD = 57600
 
-from msppg import Parser
+from msppg import MAVLink_Parser as Parser
 import serial
 
 from sys import argv
-
-print('Sorry; not working yet!')
-exit(1)
 
 if len(argv) < 2:
 
@@ -34,18 +31,16 @@ if len(argv) < 2:
     print('Example: python %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
-parser = MAVLink_Parser()
-request = parser.serialize_RC_Request()
+parser = Parser()
+
 port = serial.Serial(argv[1], BAUD)
 
-def handler(c1, c2, c3, c4, c5, c6, c7, c8):
+def handler(time_boot_ms, port, 
+        chan1_raw, chan2_raw, chan3_raw, chan4_raw, chan5_raw, chan6_raw, chan7_raw, chan8_raw, rssi):
 
-    print(c1, c2, c3, c4, c5)
-    port.write(request)
+    print(chan1_raw, chan2_raw, chan3_raw, chan4_raw, chan5_raw, chan6_raw, chan7_raw, chan8_raw, rssi)
 
-parser.set_RC_Handler(handler)
-
-port.write(request)
+parser.set_RC_CHANNELS_RAW_Handler(handler)
 
 while True:
 

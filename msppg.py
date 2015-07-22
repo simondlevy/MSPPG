@@ -135,7 +135,7 @@ class PythonEmitter(CodeEmitter):
             if msgid < 200:
                 self._write(4*self.indent + ('if self.message_id == %d:\n\n' % msgstuff[0]))
                 self._write(5*self.indent + 'if hasattr(self, \'' +  msgtype + '_Handler\'):\n\n')
-                self._write(6*self.indent + 'self.%s_Handler(*struct.unpack(\'' % msgtype)
+                self._write(6*self.indent + 'self.%s_Handler(*struct.unpack(\'=' % msgtype)
                 for argtype in self._getargtypes(msgstuff):
                     self._write('%s' % self.type2pack[argtype])
                 self._write("\'" + ', self.message_buffer))\n\n')

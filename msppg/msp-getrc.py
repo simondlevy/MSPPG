@@ -20,7 +20,7 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 
 BAUD = 115200
 
-from msppg import Parser
+from msppg import MSP_Parser as Parser
 import serial
 
 from sys import argv
