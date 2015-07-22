@@ -6,5 +6,17 @@
                {"yaw"          : "float"}, 
                {"rollspeed"    : "float"}, 
                {"pitchspeed"   : "float"}, 
-               {"yawspeed"     : "float"}]
+               {"yawspeed"     : "float"}],
+
+  "RC_CHANNELS_OVERRIDE": [{"ID": 70},
+               {"target_system"    : "byte"}, 
+               {"target_component" : "byte"}, 
+               {"chan1_raw"        : "short"}, 
+               {"chan2_raw"        : "short"}, 
+               {"chan3_raw"        : "short"}, 
+               {"chan4_raw"        : "short"}, 
+               {"chan5_raw"        : "short"}, 
+               {"chan6_raw"        : "short"}, 
+               {"chan7_raw"        : "short"}, 
+               {"chan8_raw"        : "short"}]
 }
