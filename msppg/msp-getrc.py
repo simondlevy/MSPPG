@@ -31,7 +31,7 @@ if len(argv) < 2:
     print('Example: python %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
-parser = MSP_Parser()
+parser = Parser()
 request = parser.serialize_RC_Request()
 port = serial.Serial(argv[1], BAUD)
 
