@@ -25,7 +25,6 @@ from subprocess import call
 import os
 import json
 from pkg_resources import resource_string
-from optparse import OptionParser
 
 def clean(string):
     cleaned_string = string[1: len(string) - 1]
@@ -104,18 +103,18 @@ class CodeEmitter(object):
 
 class PythonEmitter(CodeEmitter):
 
-    def _copy_example(self, name, protocol):
+    def _copy_example(self, name):
 
-        CodeEmitter._copyfile(self, '%s-%s.py' % (protocol, name), 'python/' + ('%s.py' % name))
+        CodeEmitter._copyfile(self, '%s.py' % name, 'python/' + ('%s.py' % name))
 
-    def __init__(self, msgdict, protocol):
+    def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'python', 'py')
         
-        self._copy_example('getimu', protocol)
-        self._copy_example('getrc', protocol)
-        self._copy_example('imudisplay', protocol)
-        self._copy_example('setrc', protocol)
+        self._copy_example('getimu')
+        self._copy_example('getrc')
+        self._copy_example('imudisplay')
+        self._copy_example('setrc')
 
         mkdir_if_missing('output/python/msppg')
 
@@ -127,7 +126,7 @@ class PythonEmitter(CodeEmitter):
 
         self.type2pack = {'byte' : 'B', 'short' : 'h', 'float' : 'f', 'int' : 'i'}
 
-        self._write(self._getsrc('%s-top-py' % protocol) + '\n')
+        self._write(self._getsrc('top-py') + '\n')
 
         for msgtype in msgdict.keys():
             msgstuff = msgdict[msgtype]
@@ -150,8 +149,6 @@ class PythonEmitter(CodeEmitter):
             self._write(self.indent + 'def serialize_' + msgtype + '(self')
             for argname in self._getargnames(msgstuff):
                 self._write(', ' + argname)
-            if protocol == 'mavlink':
-                self._write(',\n' + 3*self.indent + 'packet_sequence=0, system_id=0, component_id=0')
             self._write('):\n\n')
             self._write(self.indent*2 + 'message_buffer = struct.pack(\'')
             for argtype in self._getargtypes(msgstuff):
@@ -162,26 +159,14 @@ class PythonEmitter(CodeEmitter):
             self._write(')\n\n')
             self._write(self.indent*2)
 
-            if protocol == 'mavlink':
+            self._write('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid)
+            self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
+                    ('>' if msgid < 200 else '<'))
 
-                self._write('self.message_id = %d\n' % msgid)
-                self._write(2*self.indent + 'msg = chr(len(message_buffer))')
-                self._write('+ chr(packet_sequence) + chr(system_id) + chr(component_id) + ')
-                self._write('chr(self.message_id) + message_buffer\n\n')
-
-                self._write(2*self.indent + 'return self._add_crc16(msg)\n\n')
-
-            if protocol == 'msp':
-                self._write('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid)
-                self._write(self.indent*2 + 'return \'$M%c\' + msg + chr(_CRC8(msg))\n\n' %
-                        ('>' if msgid < 200 else '<'))
-
-            if protocol == 'mavlink' or msgid < 200:
+            if msgid < 200:
 
                 self._write(self.indent + 'def set_%s_Handler(self, handler):\n\n' % msgtype) 
                 self._write(2*self.indent + 'self.%s_Handler = handler\n\n' % msgtype)
-
-            if protocol == 'msp' and msgid < 200:
 
                 self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
                 self._write(2*self.indent + 'return \'$M<\' + chr(0) + chr(%s) + chr(%s)\n\n' % 
@@ -195,17 +180,17 @@ class PythonEmitter(CodeEmitter):
 
 class CPPEmitter(CodeEmitter):
 
-    def __init__(self, msgdict, protocol):
+    def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'cpp', 'cpp')
         mkdir_if_missing('output/cpp/msppg')
-        self._copyfile('msp-example.cpp', 'cpp/msp-example.cpp')
+        self._copyfile('example.cpp', 'cpp/example.cpp')
 
         mkdir_if_missing('output/arduino')
         mkdir_if_missing('output/arduino/MSPPG')
         mkdir_if_missing('output/arduino/MSPPG/examples')
         mkdir_if_missing('output/arduino/MSPPG/examples/imuexample')
-        self._copyfile('msp-imuexample.ino', 'arduino/MSPPG/examples/imuexample/msp-imuexample.ino')
+        self._copyfile('imuexample.ino', 'arduino/MSPPG/examples/imuexample/imuexample.ino')
 
         self.type2decl = {'byte': 'byte', 'short' : 'short', 'float' : 'float', 'int' : 'int'}
 
@@ -217,9 +202,9 @@ class CPPEmitter(CodeEmitter):
 
         self._cwrite(self.warning('//'))
 
-        self._hwrite(self._getsrc('msp-top-h'))
+        self._hwrite(self._getsrc('top-h'))
  
-        self._cwrite('\n' + self._getsrc('msp-top-cpp'))
+        self._cwrite('\n' + self._getsrc('top-cpp'))
 
         for msgtype in msgdict.keys():
 
@@ -359,11 +344,11 @@ class CPPEmitter(CodeEmitter):
 
 class JavaEmitter(CodeEmitter):
 
-    def __init__(self, msgdict, protocol):
+    def __init__(self, msgdict):
 
         CodeEmitter.__init__(self, 'java', 'java')
 
-        self._copyfile('msp-example.java', 'java/msp-example.java')
+        self._copyfile('example.java', 'java/example.java')
 
         mkdir_if_missing('output/java/edu')
         mkdir_if_missing('output/java/edu/wlu')
@@ -373,11 +358,11 @@ class JavaEmitter(CodeEmitter):
         self.type2decl  = {'byte': 'byte', 'short' : 'short', 'float' : 'float', 'int' : 'int'}
         self.type2bb   = {'byte': '', 'short' : 'Short', 'float' : 'Float', 'int' : 'Int'}
 
-        self.output = open('./output/java/edu/wlu/cs/msppg/MSP_Parser.java', 'w')
+        self.output = open('./output/java/edu/wlu/cs/msppg/Parser.java', 'w')
 
         self._write(self.warning('//'))
 
-        self._write(self._getsrc('msp-top-java'))
+        self._write(self._getsrc('top-java'))
 
         # Write handler cases for incoming messages
         for msgtype in msgdict.keys():
@@ -498,22 +483,8 @@ class JavaEmitter(CodeEmitter):
 
 if __name__ == '__main__':
 
-    # default to input from simple MSP example
-    infile = 'msp-example.json'
-    protocol = 'msp'
-
-    # parse command-line options
-    optparser = OptionParser()
-    optparser.add_option('-i', '--infile', dest='infilename', default=infile, 
-            help='input file', metavar='INFILE')
-    optparser.add_option('-p', '--protocol', dest='protocol', default=protocol, 
-            help='output protcol', metavar='PROTOCOL')
-    (options, args) = optparser.parse_args()
-
-    infilename = options.infilename
-    protocol = options.protocol
-
-    data = json.load(open(infilename))
+    # default to input from simple example
+    data = json.load(open(argv[1] if len(argv) > 1 else 'example.json'))
  
     # takes the types of messages from the json file
     unicode_message_types = data.keys()
@@ -551,10 +522,10 @@ if __name__ == '__main__':
     mkdir_if_missing('output')
 
     # Emit Python
-    PythonEmitter(msgdict, protocol)
+    PythonEmitter(msgdict)
 
     # Emit C++
-    CPPEmitter(msgdict, protocol)
+    CPPEmitter(msgdict)
 
     # Emite Java
-    JavaEmitter(msgdict, protocol)
+    JavaEmitter(msgdict)

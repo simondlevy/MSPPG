@@ -1,11 +1,7 @@
 # MSPPG
-MAV Serial Protocol Parser Generator for Python, Java, and C++
+Multiwii Serial Protocol Parser Generator for Python, Java, and C++
 
-This package currently includes full suport for Multiwii Serial Protocol (MSP) and partial support for MAVLink.
-
-============================================================================ 
-
-MSP Instructions 
+Instructions 
 
 The script msppg.py is ready to-run using your favorite Python interpreter: command-line, IDLE, etc.  To install so you can run it anywhere, do
 
@@ -45,16 +41,3 @@ Then copy the output/arduino/MSPPG folder into your Arduino libaries folder, lau
 
 The msp-example.json file currently contains just a few message specifications, but you can easily add to it by specifying additional messages from the MSP: http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol. 
 MSPPG currently supports types byte, short, and float, but we will likely add int as the need arises.
-
-============================================================================ 
-
-MAVLink Instructions
-
-In your favorite Python environment, run the command:
-
-   msppg.py -i mavlink-example.json -p mavlink
-
-Then connect your MAVLink FC (I used Pixhawk with Mission Planner firmware), make sure you have numpy installed, go to the output/python directory and do
-
-   imudisplay.py
-
