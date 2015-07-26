@@ -83,7 +83,7 @@ class CodeEmitter(object):
 
     def _getsrc(self, filename):
 
-        return resource_string('msppg', filename)
+        return resource_string('msppg_resources', filename)
  
     def _getargnames(self, message):
 
