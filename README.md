@@ -15,7 +15,7 @@ in Unix (Linux, OS X).
 
 Once the package is installed, you can put your example.json file anywhere and run the following:
 
-% msppg.py msp-example.json
+% msppg.py example.json
 
 which will create output/python, output/java/, output/cpp, and output/arduino. You can cd to one of the
 first three output directories and do
