@@ -17,12 +17,15 @@ Once the package is installed, you can put your example.json file anywhere and r
 
 % msppg.py example.json
 
-which will create output/python, output/java/, output/cpp, and output/arduino. You can cd to one of the
-first three output directories and do
+which will create output/python, output/java/, output/cpp, and output/arduino. If you're on a Unix system
+(Linux, Mac OS X), you can then cd to one of the first three output directories and do
 
 % make test
 
-to test the code.  In output/python you can also run the msp-imudisplay.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
+to test the code.  On Windows, the easiest way to test would be to modify the Python scripts to use 'COM3' or
+another port to access your flight controller.
+
+In output/python you can also run the msp-imudisplay.py program, which uses Tkinter and NumPy to visualize the Attitude messages coming from a flight controller (tested with AcroNaze running Baseflight).  In output/java you can do
 
 % make jar
 
