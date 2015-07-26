@@ -26,7 +26,7 @@ setup (name = 'msppg',
        description = 'Multiwii Serial Protocol Parser Generator',
        author='Rob Jones, Chris Lavin, Blake Liebling, Alec Singer, Simon D. Levy',
        author_email='simon.d.levy@gmail.com',
-       url='https://github.com/simondlevy/msppg',
+       url='https://github.com/simondlevy/MSPPG',
        license='LGPL',
        platforms='Linux; Windows; OS X')
 
