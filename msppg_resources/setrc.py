@@ -84,7 +84,6 @@ class Getter:
 
         parser.set_RC_Handler(self.get)
 
-        self.armed = False
         self.autopilot = False
         self.offtime = 0
         self.timestart = time.time()
@@ -102,14 +101,8 @@ class Getter:
 
         # Check arming
 
-        if c3 > PWM_MAX and c4 < PWM_MIN:
-            self.armed = True
-
-        if c3 < PWM_MIN and c4 < PWM_MIN:
-            self.armed = False
-
         # Switch moved down
-        if c5 > PWM_MIN and self.c5prev < PWM_MIN and self.offtime > WAIT_TIME_SEC and self.armed:
+        if c5 > PWM_MIN and self.c5prev < PWM_MIN and self.offtime > WAIT_TIME_SEC:
 
             self.autopilot = True
             self.throttle = 0
