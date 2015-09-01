@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 '''
-setrc.py Uses MSPPG to set raw RC values in flight controller
+setrc.py Uses MSPPG to set raw RC values in flight controller.  Makes the vehicle pitch forward
+when Channel 5 (three-position switch) is down.  BE CAREFUL!!!
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -28,10 +29,8 @@ PWM_MIN         = 990
 PWM_MAX         = 2000
 
 # Values for outgoing message
-THROTTLE_OUT_BASELINE = 1200
-THROTTLE_OUT_MAXADD   = 500
-THROTTLE_INC          = .001
 CHANNEL_NEUTRAL       = 1500
+CHANNEL_AUTOPILOT     = 1600
 
 from msppg import MSP_Parser as Parser
 import serial
@@ -63,11 +62,13 @@ class SetterThread(threading.Thread):
 
         while(True):
 
-            if self.getter.autopilot: 
+            getter = self.getter
 
-                throttle = int(THROTTLE_OUT_BASELINE + self.getter.throttle * THROTTLE_OUT_MAXADD)
-                message = parser.serialize_SET_RAW_RC(CHANNEL_NEUTRAL, CHANNEL_NEUTRAL, CHANNEL_NEUTRAL, 
-                        throttle, CHANNEL_NEUTRAL, 0, 0, 0)
+            if getter.autopilot: 
+
+                # Make the vehicle pitch forward on autopilot
+                message = parser.serialize_SET_RAW_RC(getter.c1, CHANNEL_AUTOPILOT, getter.c3, getter.c4, 
+                            CHANNEL_NEUTRAL, 0, 0, 0)
                 port.write(message)
 
             time.sleep(1./UPDATE_RATE_HZ)
@@ -95,6 +96,12 @@ class Getter:
 
     def get(self, c1, c2, c3, c4, c5, c6, c7, c8):
 
+        # Store stick values
+        self.c1 = c1
+        self.c2 = c2
+        self.c3 = c3
+        self.c4 = c4
+
         # Disallow startup with switch down
         if self.offtime == 0 and c5 > 1000:
             self._error('Please turn off switch before starting')
@@ -115,18 +122,7 @@ class Getter:
 
             self.timestart = time.time()
 
-        if self.autopilot:
-
-            # Increase / decrease throttle
-            self.throttle += self.throttledir * THROTTLE_INC
-
-            # Change throttle direction when limit reached
-            if self.throttle <= 0:
-                self.throttledir = +1
-            elif self.throttle >= 1:
-                self.throttledir = -1
-
-        else: 
+        if not self.autopilot:
 
             self.offtime = time.time() - self.timestart
 
