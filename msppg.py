@@ -373,7 +373,6 @@ class C_Emitter(CodeEmitter):
             '''
             self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
-            self._write_params(self.ahoutput, argtypes, argnames)
             self._hwrite(';\n\n')
 
             # Write handler code for incoming messages
