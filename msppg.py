@@ -340,7 +340,7 @@ class CPP_Emitter(CodeEmitter):
         self.houtput.write(s)
         self.ahoutput.write(s)
 
-# C / STM32  emitter ===============================================================================
+# C emitter ===============================================================================
 
 class C_Emitter(CodeEmitter):
 
@@ -361,7 +361,6 @@ class C_Emitter(CodeEmitter):
  
         self._cwrite('\n' + self._getsrc('top-c'))
 
-        '''
 
         for msgtype in msgdict.keys():
 
@@ -371,6 +370,7 @@ class C_Emitter(CodeEmitter):
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
 
+            '''
             self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
             self._write_params(self.ahoutput, argtypes, argnames)
