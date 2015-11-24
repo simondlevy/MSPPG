@@ -101,7 +101,7 @@ class CodeEmitter(object):
 
 # Python emitter ============================================================================
 
-class PythonEmitter(CodeEmitter):
+class Python_Emitter(CodeEmitter):
 
     def _copy_example(self, name):
 
@@ -178,7 +178,7 @@ class PythonEmitter(CodeEmitter):
 
 # C++ / Arduino emitter ============================================================================
 
-class CPPEmitter(CodeEmitter):
+class CPP_Emitter(CodeEmitter):
 
     def __init__(self, msgdict):
 
@@ -342,7 +342,7 @@ class CPPEmitter(CodeEmitter):
 
 # C / STM32  emitter ===============================================================================
 
-class CEmitter(CodeEmitter):
+class C_Emitter(CodeEmitter):
 
     def __init__(self, msgdict):
 
@@ -500,7 +500,7 @@ class CEmitter(CodeEmitter):
 
 # Java emitter =======================================================================================
 
-class JavaEmitter(CodeEmitter):
+class Java_Emitter(CodeEmitter):
 
     def __init__(self, msgdict):
 
@@ -680,10 +680,13 @@ if __name__ == '__main__':
     mkdir_if_missing('output')
 
     # Emit Python
-    PythonEmitter(msgdict)
+    Python_Emitter(msgdict)
 
     # Emit C++
-    CPPEmitter(msgdict)
+    CPP_Emitter(msgdict)
+
+    # Emit C
+    #C_Emitter(msgdict)
 
     # Emite Java
-    JavaEmitter(msgdict)
+    Java_Emitter(msgdict)
