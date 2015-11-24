@@ -686,7 +686,7 @@ if __name__ == '__main__':
     CPP_Emitter(msgdict)
 
     # Emit C
-    #C_Emitter(msgdict)
+    C_Emitter(msgdict)
 
     # Emite Java
     Java_Emitter(msgdict)
