@@ -4,3 +4,18 @@ static const int MAXBUF = 256;
 
 typedef unsigned char byte;
 
+typedef struct {
+
+        byte bytes[MAXBUF];
+        int pos;
+        int len;
+
+} msp_message_t;
+
+byte msp_message_start(msp_message_t * msg);
+
+int msp_message_has_next(msp_message_t * msg);
+
+byte msp_message_get_next(msp_message_t * msg);
+
+
