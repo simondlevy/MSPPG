@@ -370,10 +370,10 @@ class C_Emitter(CodeEmitter):
             argnames = self._getargnames(msgstuff)
             argtypes = self._getargtypes(msgstuff)
 
-            '''
-            self._hwrite(self.indent*2 + 'MSP_Message serialize_%s' % msgtype)
+            self._hwrite('msp_message_t msp_serialize_%s' % msgtype)
             self._write_params(self.houtput, argtypes, argnames)
             self._hwrite(';\n\n')
+            '''
 
             # Write handler code for incoming messages
             if msgid < 200:
