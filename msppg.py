@@ -83,7 +83,7 @@ class CodeEmitter(object):
 
     def _getsrc(self, filename):
 
-        return resource_string('msppg_resources', filename)
+        return resource_string('resources', filename)
  
     def _getargnames(self, message):
 
@@ -355,12 +355,13 @@ class C_Emitter(CodeEmitter):
         self.coutput = open('./output/c/msppg/msppg.c', 'w')
         self.houtput = open('./output/c/msppg/msppg.h', 'w')
 
-        '''
         self._cwrite(self.warning('//'))
 
         self._hwrite(self._getsrc('top-h'))
  
-        self._cwrite('\n' + self._getsrc('top-cpp'))
+        self._cwrite('\n' + self._getsrc('top-c'))
+
+        '''
 
         for msgtype in msgdict.keys():
 
@@ -485,18 +486,15 @@ class C_Emitter(CodeEmitter):
             self._cwrite(self.indent + 'msg.len = %d;\n\n' % (msgsize+6))
             self._cwrite(self.indent + 'return msg;\n')
             self._cwrite('}\n\n')
+    '''
  
     def _cwrite(self, s):
 
         self.coutput.write(s)
-        self.acoutput.write(s)
 
     def _hwrite(self, s):
 
         self.houtput.write(s)
-        self.ahoutput.write(s)
-
-    '''
 
 # Java emitter =======================================================================================
 
