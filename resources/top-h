@@ -1,8 +1,9 @@
 /* AUTO-GENERATED CODE: DO NOT EDIT!!!*/
 
-static const int MAXBUF = 256;
+#define MAXBUF 256
 
 typedef unsigned char byte;
+typedef unsigned char bool;
 
 typedef struct {
 
@@ -21,16 +22,4 @@ typedef struct {
     byte message_length_received;
     byte message_buffer[MAXBUF];
     byte message_checksum;
-
-} msp_parser_t;
-
-byte msp_message_start(msp_message_t * msg);
-
-int msp_message_has_next(msp_message_t * msg);
-
-byte msp_message_get_next(msp_message_t * msg);
-
-void msp_parser_init(msp_parser_t * parser);
-
-void msp_parser_parser(msp_parser_t * parser, byte b);
 

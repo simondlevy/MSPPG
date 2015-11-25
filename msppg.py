@@ -358,6 +358,22 @@ class C_Emitter(CodeEmitter):
         self._cwrite(self.warning('//'))
 
         self._hwrite(self._getsrc('top-h'))
+
+        for msgtype in msgdict.keys():
+
+            msgstuff = msgdict[msgtype]
+            msgid = msgstuff[0]
+
+            if msgid < 200:
+
+                argnames = self._getargnames(msgstuff)
+                argtypes = self._getargtypes(msgstuff)
+
+                self._hwrite(self.indent + 'void (*handler_for_%s)' % msgtype)
+                self._write_params(self.houtput, argtypes, argnames)
+                self._hwrite(';\n')
+
+        self._hwrite(self._getsrc('bottom-h'))
  
         self._cwrite('\n' + self._getsrc('top-c'))
 
@@ -388,7 +404,7 @@ class C_Emitter(CodeEmitter):
                             'memcpy(&%s,  &parser->message_buffer[%d], sizeof(%s));\n\n' % 
                             (argname, offset, decl))
                     offset += self.type2size[argtype]
-                self._cwrite(6*self.indent + 'parser->handle_%s(' % msgtype)
+                self._cwrite(6*self.indent + 'parser->handler_for_%s(' % msgtype)
                 for k in range(nargs):
                     self._cwrite(argnames[k])
                     if k < nargs-1:
@@ -418,7 +434,7 @@ class C_Emitter(CodeEmitter):
                 self._cwrite('void set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
                 self._write_params(self.coutput, argtypes, argnames)
                 self._cwrite(') {\n\n')
-                self._cwrite(self.indent + 'parser->handlerFor%s = handler;\n' % msgtype)
+                self._cwrite(self.indent + 'parser->handler_for_%s = handler;\n' % msgtype)
                 self._cwrite('}\n\n')
 
                 # Write request method
@@ -572,7 +588,8 @@ class Java_Emitter(CodeEmitter):
             self._write(2*self.indent + 'message[3] = %d;\n' % msgsize)
             self._write(2*self.indent + 'message[4] = (byte)%d;\n' %msgdict[msgtype][0]) 
             self._write(2*self.indent + 'byte [] data = bb.array();\n')
-            self._write(2*self.indent + 'for (int k=0; k<data.length; ++k) {\n')
+            self._write(2*self.indent + 'int k;\n')
+            self._write(2*self.indent + 'for (k=0; k<data.length; ++k) {\n')
             self._write(3*self.indent + 'message[k+5] = data[k];\n')
             self._write(2*self.indent + '}\n\n')
             self._write(2*self.indent + 'message[%d] = CRC8(message, 3, %d);\n\n' % 
