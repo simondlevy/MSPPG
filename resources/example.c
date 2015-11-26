@@ -32,7 +32,7 @@ int main(int argc, char ** argv) {
 
     msp_message_t message = msp_serialize_ATTITUDE(59, 76, 1);
 
-    set_ATTITUDE_handler(&parser, handle_attitude);
+    msp_set_ATTITUDE_handler(&parser, handle_attitude);
 
     byte b = msp_message_start(&message); 
     while (msp_message_has_next(&message)) {

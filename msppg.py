@@ -413,7 +413,7 @@ class C_Emitter(CodeEmitter):
                 self._cwrite(6*self.indent + '} break;\n\n')
                 
                 self._hwrite('msp_message_t msp_serialize_%s_request();\n\n' % msgtype)
-                self._hwrite('void set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
+                self._hwrite('void msp_set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
                 self._write_params(self.houtput, argtypes, argnames)
                 self._hwrite(');\n\n')
 
@@ -431,7 +431,7 @@ class C_Emitter(CodeEmitter):
             if msgid < 200:
 
                 # Write handler method
-                self._cwrite('void set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
+                self._cwrite('void msp_set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
                 self._write_params(self.coutput, argtypes, argnames)
                 self._cwrite(') {\n\n')
                 self._cwrite(self.indent + 'parser->handler_for_%s = handler;\n' % msgtype)
