@@ -1,5 +1,5 @@
 /*
-Example for testing C output of MSPPG
+Example for testing C output of mspPG
 
 Copyright (C) Rob Jones, Alec Singer, Chris Lavin, Blake Liebling, Simon D. Levy 2015
 
@@ -17,10 +17,28 @@ along with this code.  If not, see <http:#www.gnu.org/licenses/>.
 */
 
 #include <stdio.h>
-
 #include "msppg/msppg.h"
 
+void handle_attitude(short angx, short angy, short heading) {
+
+    printf("%+3d %+3d %+3d\n", angx, angy, heading);
+}
+
 int main(int argc, char ** argv) {
+
+    msp_parser_t parser;
+
+    msp_parser_init(&parser);
+
+    msp_message_t message = msp_serialize_ATTITUDE(59, 76, 1);
+
+    set_ATTITUDE_handler(&parser, handle_attitude);
+
+    byte b = msp_message_start(&message); 
+    while (msp_message_has_next(&message)) {
+        msp_parser_parse(&parser, b);
+        b=msp_message_get_next(&message);
+    }
 
     return 0;
 }

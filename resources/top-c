@@ -38,7 +38,7 @@ void msp_parser_init(msp_parser_t * parser) {
     parser->state = 0;
 }
 
-void msp_parser_parser(msp_parser_t * parser, byte b) {
+void msp_parser_parse(msp_parser_t * parser, byte b) {
 
     switch (parser->state) {
 

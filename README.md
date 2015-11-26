@@ -1,5 +1,5 @@
 # MSPPG
-Multiwii Serial Protocol Parser Generator for Python, Java, and C++
+Multiwii Serial Protocol Parser Generator for Python, Java, and C++, and C.
 
 Instructions 
 
@@ -17,8 +17,8 @@ Once the package is installed, you can put your example.json file anywhere and r
 
 % msppg.py example.json
 
-which will create output/python, output/java/, output/cpp, and output/arduino. If you're on a Unix system
-(Linux, Mac OS X), you can then cd to one of the first three output directories and do
+which will create output/python, output/java/, output/c, output/cpp, and output/arduino. If you're on a Unix system
+(Linux, Mac OS X), you can then cd to one of the first four output directories and do
 
 % make test
 

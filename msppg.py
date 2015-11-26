@@ -412,7 +412,7 @@ class C_Emitter(CodeEmitter):
                 self._cwrite(');\n')
                 self._cwrite(6*self.indent + '} break;\n\n')
                 
-                self._hwrite('msp_message_t serialize_%s_request();\n\n' % msgtype)
+                self._hwrite('msp_message_t msp_serialize_%s_request();\n\n' % msgtype)
                 self._hwrite('void set_%s_handler(msp_parser_t * parser, void (*handler)' % msgtype)
                 self._write_params(self.houtput, argtypes, argnames)
                 self._hwrite(');\n\n')
@@ -451,7 +451,7 @@ class C_Emitter(CodeEmitter):
                 self._cwrite('}\n\n')
 
             # Add parser method for serializing message
-            self._cwrite('msp_message_t serialize_%s' % msgtype)
+            self._cwrite('msp_message_t msp_serialize_%s' % msgtype)
             self._write_params(self.coutput, argtypes, argnames)
             self._cwrite(' {\n\n')
             self._cwrite(self.indent + 'msp_message_t msg;\n\n')
