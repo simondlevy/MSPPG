@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 imudisplay.py - graphical demo of MSPPG Attitude messages
@@ -24,7 +24,7 @@ FMUPORT = '/dev/ttyUSB0'
 VEHICLE_SCALE = 0.10
 UPDATE_MSEC = 10
 
-from Tkinter import *
+from tkinter import *
 import threading
 import serial
 import time

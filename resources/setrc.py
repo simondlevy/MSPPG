@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 setrc.py Uses MSPPG to set raw RC values in flight controller.  Makes the vehicle pitch forward
@@ -40,8 +40,8 @@ import threading
 
 if len(argv) < 2:
 
-    print('Usage: python %s PORT' % argv[0])
-    print('Example: python %s /dev/ttyUSB0' % argv[0])
+    print('Usage: python3 %s PORT' % argv[0])
+    print('Example: python3 %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
 parser = Parser()

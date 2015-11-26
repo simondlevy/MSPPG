@@ -21,10 +21,10 @@ PORT = /dev/ttyUSB0
 #PORT = COM3
 
 install:
-	sudo python setup.py install
+	sudo python3 setup.py install
 
 test: 
-	python getimu.py $(PORT)
+	python3 getimu.py $(PORT)
   
 clean:
 	rm -f *.pyc

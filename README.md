@@ -1,21 +1,21 @@
 # MSPPG
-Multiwii Serial Protocol Parser Generator for Python, Java, and C++, and C.
+Multiwii Serial Protocol Parser Generator for Python3, Java, and C++, and C.
 
 Instructions 
 
 The script msppg.py is ready to-run using your favorite Python interpreter: command-line, IDLE, etc.  To install so you can run it anywhere, do
 
-% python setup.py install
+% python3 setup.py install
 
 from a Windows command shell, or
 
-% sudo python setup.py install
+% sudo python3 setup.py install
 
 in Unix (Linux, OS X).
 
 Once the package is installed, you can put your example.json file anywhere and run the following:
 
-% msppg.py example.json
+% msppg.py
 
 which will create output/python, output/java/, output/c, output/cpp, and output/arduino. If you're on a Unix system
 (Linux, Mac OS X), you can then cd to one of the first four output directories and do

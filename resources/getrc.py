@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 getrc.py Uses MSPPG to request and handle RC messages from flight controller
@@ -27,8 +27,8 @@ from sys import argv
 
 if len(argv) < 2:
 
-    print('Usage: python %s PORT' % argv[0])
-    print('Example: python %s /dev/ttyUSB0' % argv[0])
+    print('Usage: python3 %s PORT' % argv[0])
+    print('Example: python3 %s /dev/ttyUSB0' % argv[0])
     exit(1)
 
 parser = Parser()

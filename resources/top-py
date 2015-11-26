@@ -42,7 +42,7 @@ class MSP_Parser(object):
             self.message_length_expected = byte
             self.message_checksum = byte
             # setup arraybuffer
-            self.message_buffer = ''
+            self.message_buffer = b''
             self.state += 1
 
         elif self.state ==  4:
