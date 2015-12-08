@@ -83,7 +83,7 @@ class CodeEmitter(object):
 
     def _getsrc(self, filename):
 
-        return resource_string('resources', filename).decode('utf-8')
+        return resource_string('msppg_resources', filename).decode('utf-8')
  
     def _getargnames(self, message):
 

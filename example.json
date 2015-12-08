@@ -25,5 +25,8 @@
                  {"c5": "short"}, 
                  {"c6": "short"}, 
                  {"c7": "short"}, 
-                 {"c8": "short"}]
+                 {"c8": "short"}],
+
+  "PX4FLOW": [{"ID": 150},
+               {"aglcm": "short"}]
 }
