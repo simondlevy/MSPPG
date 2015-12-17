@@ -114,6 +114,7 @@ class Python_Emitter(CodeEmitter):
         self._copy_example('getimu')
         self._copy_example('getrc')
         self._copy_example('imudisplay')
+        self._copy_example('blueimudisplay')
         self._copy_example('setrc')
 
         mkdir_if_missing('output/python/msppg')
