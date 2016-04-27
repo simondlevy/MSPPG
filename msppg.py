@@ -161,7 +161,7 @@ class Python_Emitter(CodeEmitter):
             self._write(self.indent*2)
 
             self._write('msg = chr(len(message_buffer)) + chr(%s) + message_buffer\n\n' % msgid)
-            self._write(self.indent*2 + 'return bytes(\'$M%c\' + msg + chr(_CRC8(msg)), "utf-8")\n\n' %
+            self._write(self.indent*2 + 'return _bytes(\'$M%c\' + msg + chr(_CRC8(msg)))\n\n' %
                     ('>' if msgid < 200 else '<'))
 
             if msgid < 200:
@@ -170,7 +170,7 @@ class Python_Emitter(CodeEmitter):
                 self._write(2*self.indent + 'self.%s_Handler = handler\n\n' % msgtype)
 
                 self._write(self.indent + 'def serialize_' + msgtype + '_Request(self):\n\n')
-                self._write(2*self.indent + 'return bytes(\'$M<\' + chr(0) + chr(%s) + chr(%s), "utf-8")\n\n' % 
+                self._write(2*self.indent + 'return _bytes(\'$M<\' + chr(0) + chr(%s) + chr(%s))\n\n' % 
                         (msgid, msgid))
 
     def _write(self, s):

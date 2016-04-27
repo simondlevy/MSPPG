@@ -1,5 +1,6 @@
 
-import  struct
+import struct
+import sys
 
 def _CRC8(data):
 
@@ -10,6 +11,10 @@ def _CRC8(data):
         crc ^= ord(c)
 
     return crc
+
+def _bytes(s):
+
+    return bytes(s) if sys.version[0] == '2' else bytes(s, "utf-8")
 
 class MSP_Parser(object):
 
