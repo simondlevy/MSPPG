@@ -27,18 +27,9 @@
                  {"c7": "short"}, 
                  {"c8": "short"}],
 
-  "PX4FLOW": [{"ID": 125},
-               {"comment": " ttps://pixhawk.org/modules/px4flow#i2c"},
-               {"framecount": "short"},
-               {"pixel_flow_x_sum": "short"}, 
-               {"pixel_flow_y_sum": "short"}, 
-               {"flow_comp_m_x": "short"},    
-               {"flow_comp_m_y": "short"},    
-               {"qual": "short"},             
-               {"gyro_x_rate": "short"},      
-               {"gyro_y_rate": "short"},      
-               {"gyro_z_rate": "short"},      
-               {"gyro_range": "byte"},       
-               {"sonar_timestamp": "byte"},  
-               {"ground_distance": "short"}]
+  "SET_MOTOR": [{"ID": 214},
+                 {"m1": "short"},
+                 {"m2": "short"},
+                 {"m3": "short"},
+                 {"m4": "short"}]
 }
